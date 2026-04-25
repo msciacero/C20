@@ -140,6 +140,7 @@ var CompendiumEditor = (function () {
         { text: "Backgrounds", value: "background" },
         { text: "Conditions", value: "condition" },
         { text: "Feats", value: "feat" },
+        { text: "Items", value: "item" },
         { text: "Spells", value: "spell" },
       ],
       changeHandler: async function () {
@@ -171,28 +172,19 @@ var CompendiumEditor = (function () {
   }
 
   function createEditorRadio() {
-    var optionsDiv = document.createElement("div");
+    var optionsDiv = createRadioInputGroup({
+      title: "",
+      name: "editor",
+      options: [
+        { value: "ui", name: "UI Editor" },
+        { value: "json", name: "JSON Editor" },
+      ],
+      selectedValue: settings.editor,
+      changeHandler: updateEditorRadio,
+    });
+
     optionsDiv.style.display = "absolute";
     optionsDiv.style.right = "10px";
-
-    optionsDiv.appendChild(
-      createRadioInput({
-        id: "ui",
-        name: "editor",
-        title: "UI Editor",
-        checked: settings.editor === "ui",
-        changeHandler: updateEditorRadio,
-      })
-    );
-    optionsDiv.appendChild(
-      createRadioInput({
-        id: "json",
-        name: "editor",
-        title: "JSON Editor",
-        checked: settings.editor === "json",
-        changeHandler: updateEditorRadio,
-      })
-    );
 
     return optionsDiv;
   }
@@ -221,7 +213,7 @@ var CompendiumEditor = (function () {
     var categoryData = await StorageHelper.listItemsByType(
       StorageHelper.dbNames.compendiums,
       stdEl.game.getValue(),
-      stdEl.category.getValue()
+      stdEl.category.getValue(),
     );
 
     categoryData = Array.from(categoryData)
@@ -240,7 +232,7 @@ var CompendiumEditor = (function () {
 
   async function updateEditorRadio(event) {
     if (event.target.checked === true) {
-      settings.editor = event.target.id;
+      settings.editor = event.target.value;
       updateEditor();
     }
   }
@@ -260,7 +252,7 @@ var CompendiumEditor = (function () {
       entry = await StorageHelper.getItem(
         StorageHelper.dbNames.compendiums,
         stdEl.game.getValue(),
-        Number(stdEl.entry.getValue())
+        Number(stdEl.entry.getValue()),
       );
     else if (stdEl.category.getValue() === "background")
       entry = {
@@ -284,6 +276,17 @@ var CompendiumEditor = (function () {
         description: "",
         type: "feat",
         source: "",
+      };
+    else if (stdEl.category.getValue() === "item")
+      entry = {
+        name: stdEl.entry.getTextValue().replace("Add ", "").replace("...", ""),
+        description: "",
+        type: "item",
+        count: 1,
+        source: "",
+        magical: "",
+        hands: "",
+        size: "",
       };
     else if (stdEl.category.getValue() === "spell")
       entry = {
@@ -317,10 +320,12 @@ var CompendiumEditor = (function () {
     } else if (settings.editor === "ui") {
       if (stdEl.category.getValue() === "background")
         document.querySelector("#compendium-editor").replaceChildren(createTraitEditor(entry));
-      if (stdEl.category.getValue() === "condition")
+      else if (stdEl.category.getValue() === "condition")
         document.querySelector("#compendium-editor").replaceChildren(createConditionsEditor(entry));
-      if (stdEl.category.getValue() === "feat")
+      else if (stdEl.category.getValue() === "feat")
         document.querySelector("#compendium-editor").replaceChildren(createTraitEditor(entry));
+      else if (stdEl.category.getValue() === "item")
+        document.querySelector("#compendium-editor").replaceChildren(createItemEditor(entry));
       else if (stdEl.category.getValue() === "spell")
         document.querySelector("#compendium-editor").replaceChildren(createSpellEditor(entry));
     }
@@ -363,10 +368,11 @@ var CompendiumEditor = (function () {
 
   function createConditionsEditor(data) {
     var editor = document.createElement("form");
+    editor.className = "c20-form";
     editor.style.margin = "20px 0 30px 0";
 
     editor.appendChild(
-      createTextInput({ name: "groupName", title: "Group Name", value: data?.groupName ?? "", required: false })
+      createTextInput({ name: "groupName", title: "Group Name", value: data?.groupName ?? "", required: false }),
     );
     editor.appendChild(createTextInput({ name: "name", title: "Name", value: data.name, required: true }));
     editor.appendChild(createTextInput({ name: "source", title: "Source", value: data.source, required: false }));
@@ -377,10 +383,10 @@ var CompendiumEditor = (function () {
         value: data.description,
         required: false,
         height: 320,
-      })
+      }),
     );
     editor.appendChild(
-      createTextArray({ name: "short[]", title: "Short Description", values: data.short, required: false })
+      createTextArray({ name: "short[]", title: "Short Description", values: data.short, required: false }),
     );
     editor.appendChild(createHiddenInput({ name: "type", value: data.type }));
     if (data.id !== undefined) editor.appendChild(createHiddenInput({ name: "id", value: data.id }));
@@ -390,6 +396,7 @@ var CompendiumEditor = (function () {
 
   function createTraitEditor(data) {
     var editor = document.createElement("form");
+    editor.className = "c20-form";
     editor.style.margin = "20px 0 30px 0";
 
     editor.appendChild(createTextInput({ name: "name", title: "Name", value: data.name, required: true }));
@@ -402,7 +409,7 @@ var CompendiumEditor = (function () {
         value: data.description,
         required: false,
         height: 320,
-      })
+      }),
     );
 
     editor.appendChild(createHiddenInput({ name: "type", value: data.type }));
@@ -412,6 +419,7 @@ var CompendiumEditor = (function () {
 
   function createSpellEditor(data) {
     var editor = document.createElement("form");
+    editor.className = "c20-form";
     editor.style.margin = "20px 0 30px 0";
 
     editor.appendChild(createTextInput({ name: "name", title: "Name", value: data.name, required: true }));
@@ -433,7 +441,7 @@ var CompendiumEditor = (function () {
           { name: "8th", value: "8" },
           { name: "9th", value: "9" },
         ],
-      })
+      }),
     );
     editor.appendChild(
       createSelectInput({
@@ -451,7 +459,7 @@ var CompendiumEditor = (function () {
           { name: "Necromancy", value: "necromancy" },
           { name: "Transmutation", value: "transmutation" },
         ],
-      })
+      }),
     );
     editor.appendChild(createTextInput({ name: "time", title: "Casting Time", value: data.time, required: true }));
     editor.appendChild(createTextInput({ name: "range", title: "Range/Area", value: data.range, required: false }));
@@ -470,28 +478,33 @@ var CompendiumEditor = (function () {
           { name: "Wisdom", value: "Wisdom" },
           { name: "Charisma", value: "Charisma" },
         ],
-      })
+      }),
     );
 
     editor.appendChild(
-      createTextInput({ name: "savingEffect", title: "Saving Effect", value: data.savingEffect, required: false })
+      createTextInput({ name: "savingEffect", title: "Saving Effect", value: data.savingEffect, required: false }),
     );
 
     editor.appendChild(
-      createCheckboxInput({ name: "concentration", title: "Concentration", value: data.concentration, required: false })
+      createCheckboxInput({
+        name: "concentration",
+        title: "Concentration",
+        value: data.concentration,
+        required: false,
+      }),
     );
     editor.appendChild(createCheckboxInput({ name: "ritual", title: "Ritual", value: data.ritual, required: false }));
 
     editor.appendChild(createCheckboxInput({ name: "verbal", title: "Verbal", value: data.verbal, required: false }));
     editor.appendChild(
-      createCheckboxInput({ name: "somatic", title: "Somatic", value: data.somatic, required: false })
+      createCheckboxInput({ name: "somatic", title: "Somatic", value: data.somatic, required: false }),
     );
     editor.appendChild(
-      createCheckboxInput({ name: "material", title: "Material", value: data.material, required: false })
+      createCheckboxInput({ name: "material", title: "Material", value: data.material, required: false }),
     );
 
     editor.appendChild(
-      createTextInput({ name: "materials", title: "Materials", value: data.materials, required: false })
+      createTextInput({ name: "materials", title: "Materials", value: data.materials, required: false }),
     );
 
     editor.appendChild(
@@ -505,14 +518,14 @@ var CompendiumEditor = (function () {
           { name: "Melee", value: "Melee" },
           { name: "Ranged", value: "Ranged" },
         ],
-      })
+      }),
     );
     editor.appendChild(createTextInput({ name: "healing", title: "Healing", value: data.healing, required: false }));
     editor.appendChild(
-      createTextInput({ name: "damageRoll", title: "Damage", value: data.damageRoll, required: false })
+      createTextInput({ name: "damageRoll", title: "Damage", value: data.damageRoll, required: false }),
     );
     editor.appendChild(
-      createTextInput({ name: "damageType", title: "Damage Type/Effect", value: data.damageType, required: false })
+      createTextInput({ name: "damageType", title: "Damage Type/Effect", value: data.damageType, required: false }),
     );
     editor.appendChild(
       createCheckboxInput({
@@ -520,11 +533,11 @@ var CompendiumEditor = (function () {
         title: "Add Ability Modifier to Damage/Healing",
         value: data.abilityModifier,
         required: false,
-      })
+      }),
     );
 
     editor.appendChild(
-      createTextAreaInput({ name: "description", title: "Description", value: data.description, required: false })
+      createTextAreaInput({ name: "description", title: "Description", value: data.description, required: false }),
     );
 
     editor.appendChild(
@@ -533,11 +546,11 @@ var CompendiumEditor = (function () {
         title: "At Higher Levels",
         value: data.higherLevels,
         required: false,
-      })
+      }),
     );
 
     editor.appendChild(
-      createTextInput({ name: "higherRoll", title: "Higher Level Roll", value: data.higherRoll, required: false })
+      createTextInput({ name: "higherRoll", title: "Higher Level Roll", value: data.higherRoll, required: false }),
     );
 
     editor.appendChild(createTextInput({ name: "source", title: "Source", value: data.source, required: false }));
@@ -582,7 +595,7 @@ var CompendiumEditor = (function () {
         var itemId = await StorageHelper.addOrUpdateItem(
           StorageHelper.dbNames.compendiums,
           stdEl.game.getValue(),
-          validateResponse.entry
+          validateResponse.entry,
         );
 
         await updateCategorySelect();
@@ -601,7 +614,7 @@ var CompendiumEditor = (function () {
       await StorageHelper.deleteItem(
         StorageHelper.dbNames.compendiums,
         stdEl.game.getValue(),
-        Number(stdEl.entry.getValue())
+        Number(stdEl.entry.getValue()),
       );
       await updateCategorySelect();
     });
@@ -629,7 +642,7 @@ var CompendiumEditor = (function () {
     var validateResponse = { valid: false, entry: {} };
     if (settings.editor === "json") {
       var jsonData = document.querySelector("#compendium-rawEditor-textarea").value;
-      validateDefaultJson(jsonData);
+      validateResponse = validateDefaultJson(jsonData);
       document.getElementById("compendium-error-wrapper").replaceChildren(...validateResponse.errors);
     } else {
       var form = document.querySelector("#c20-compendium-modal-content form");
@@ -651,6 +664,9 @@ var CompendiumEditor = (function () {
           validateResponse.entry[key] = value;
         }
       }
+
+      if (stdEl.category.getValue() === "item")
+        validateResponse.entry = constructItemAbilityData(validateResponse.entry);
     }
 
     if (validateResponse.valid === true) {
@@ -829,7 +845,7 @@ var CompendiumEditor = (function () {
           await StorageHelper.exportObjectStore(
             StorageHelper.dbNames.compendiums,
             advEl.game.getValue(),
-            `c20_compendium_${advEl.game.getValue()}.json`
+            `c20_compendium_${advEl.game.getValue()}.json`,
           );
         } else if (advEl.operation.getValue() === "import") {
           var [handle] = await window.showOpenFilePicker({
@@ -862,13 +878,13 @@ var CompendiumEditor = (function () {
             StorageHelper.dbNames.compendiums,
             advEl.game.getValue(),
             jsonData,
-            settings.update
+            settings.update,
           );
           await updateGameSelect();
         } else if (advEl.operation.getValue() === "create") {
           await StorageHelper.createObjectStore(
             StorageHelper.dbNames.compendiums,
-            document.querySelector("#c20-advanced-modal-content input[name='advNewGame']").value
+            document.querySelector("#c20-advanced-modal-content input[name='advNewGame']").value,
           );
           await updateGameSelect();
         }

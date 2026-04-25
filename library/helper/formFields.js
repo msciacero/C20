@@ -9,6 +9,7 @@ function createSelectInput(data) {
   select.id = data.name;
   select.name = data.name;
   select.required = data.required || false;
+  select.style.width = "100%";
 
   // default option
   var option = document.createElement("option");
@@ -32,19 +33,42 @@ function createSelectInput(data) {
   return group;
 }
 
+function createRadioInputGroup({ title, name, options, selectedValue, changeHandler, inline }) {
+  var group = document.createElement("div");
+  if (title) group.appendChild(createLabel(name, title));
+
+  var optionGroup = document.createElement("div");
+  optionGroup.style.display = inline ? "flex" : "block";
+  optionGroup.style.gap = inline ? "10px" : "0px";
+
+  options.forEach((o) => {
+    var radioInput = createRadioInput({
+      title: o.name,
+      id: o.value,
+      name: name,
+      checked: selectedValue === o.value,
+      changeHandler: changeHandler,
+    });
+    optionGroup.appendChild(radioInput);
+  });
+
+  group.appendChild(optionGroup);
+  return group;
+}
+
 function createRadioInput({ title, id, name, checked, changeHandler }) {
   var group = document.createElement("div");
   group.style.display = "flex";
 
   var input = document.createElement("input");
   input.type = "radio";
-  input.id = id;
-  input.name = name;
   input.value = id;
+  input.id = `${name}-${id}`;
+  input.name = name;
   input.checked = checked;
   if (changeHandler !== undefined) input.addEventListener("change", changeHandler);
 
-  var label = createLabel(id, title);
+  var label = createLabel(`${name}-${id}`, title);
   label.style.padding = "5px 0 0 5px";
 
   group.appendChild(input);
@@ -52,12 +76,12 @@ function createRadioInput({ title, id, name, checked, changeHandler }) {
   return group;
 }
 
-function createTextInput({ title, name, value, required }) {
+function createTextInput({ title, name, value, required, placeHolder }) {
   var group = document.createElement("div");
   group.style.marginBottom = "10px";
 
-  var input = createInput(name, value, required);
-  input.style.width = "91%";
+  var input = createInput(name, value, required, placeHolder);
+  input.style.width = "100%";
 
   group.appendChild(createLabel(name, title));
   group.appendChild(input);
@@ -136,7 +160,6 @@ function createTextArrayInput(name, value, required) {
   var btn = createDeleteButton();
   btn.addEventListener("click", function () {
     inputGroup.remove();
-    enableSaveButton();
   });
 
   inputGroup.appendChild(btn);
@@ -178,7 +201,6 @@ function createTextAreaArrayInput(name, value, required) {
   var btn = createDeleteButton();
   btn.addEventListener("click", function () {
     inputGroup.remove();
-    enableSaveButton();
   });
 
   inputGroup.appendChild(btn);
@@ -292,7 +314,7 @@ class c20FieldComboBox {
       var option = Array.from(this.optionsEl.childNodes).find(
         (o) =>
           o.textContent === this.inputEl.value &&
-          o.getAttribute("data-c20-value") === this.inputEl.getAttribute("data-c20-value")
+          o.getAttribute("data-c20-value") === this.inputEl.getAttribute("data-c20-value"),
       );
       if (!option) option = Array.from(this.optionsEl.childNodes).find((o) => o.textContent === this.inputEl.value);
       var value = option?.getAttribute("data-c20-value") ?? "";
@@ -405,7 +427,7 @@ function createTextArea(name, value, required, height) {
   input.name = name;
   input.required = required ?? false;
   input.value = value ?? "";
-  input.style.width = "91%";
+  input.style.width = "100%";
   input.style.height = height ? `${height}px` : "100px";
   return input;
 }

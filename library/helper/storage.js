@@ -94,7 +94,7 @@ var StorageHelper = (function () {
         var id = s.find(
           (x) =>
             (x.groupName?.toLowerCase() ?? "") === (data[i].groupName?.toLowerCase() ?? "") &&
-            x.name?.toLowerCase() === data[i].name?.toLowerCase()
+            x.name?.toLowerCase() === data[i].name?.toLowerCase(),
         )?.id;
 
         if (id) {

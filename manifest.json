@@ -20,7 +20,9 @@
         "library/helper/modal.js",
         "library/helper/storage.js",
         "library/helper/formFields.js",
-        "library/helper/markdown.js"
+        "library/helper/markdown.js",
+        "library/helper/tab.js",
+        "library/shared/itemEditor.js"
       ],
       "css": ["app/styles.css"],
       "world": "ISOLATED"
@@ -32,6 +34,7 @@
         "character/defenses.js",
         "character/miniNotes.js",
         "character/spells.js",
+        "character/inventory.js",
         "character/compendiumImport.js",
         "character/characterSettings.js",
         "character/traits.js",
@@ -41,7 +44,10 @@
         "library/external/expr-eval.js",
         "library/helper/modal.js",
         "library/helper/storage.js",
-        "library/helper/markdown.js"
+        "library/helper/formFields.js",
+        "library/helper/markdown.js",
+        "library/helper/tab.js",
+        "library/shared/itemEditor.js"
       ],
       "css": ["character/styles.css"],
       "all_frames": true,

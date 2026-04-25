@@ -46,7 +46,7 @@ var CompendiumImport = (function () {
     var compendiumData = await StorageHelper.getItem(
       StorageHelper.dbNames.compendiums,
       request.game,
-      Number(request.id)
+      Number(request.id),
     );
 
     if (compendiumData != null) {
@@ -57,6 +57,9 @@ var CompendiumImport = (function () {
           break;
         case "feat":
           processTrait(compendiumData);
+          break;
+        case "item":
+          importItem(compendiumData);
           break;
         case "spell":
           importSpell(compendiumData);
@@ -119,6 +122,69 @@ var CompendiumImport = (function () {
     updateInput(header, 'input[name="attr_background"]', data.name);
   }
 
+  function importItem(data) {
+    // Properties (Versatile, Finesse, Thrown, heavy arms)
+    var props = [];
+    Object.keys(data)
+      .filter((x) => x.indexOf("prop_") === 0 && data[x])
+      .forEach((x) => {
+        props.push(x.substring(5).replaceAll("_", " "));
+      });
+
+    if (data.propV_magical === "Yes") props.push("Magical");
+    else if (data.propV_magical === "Attunement") props.push("Magical (Attunement)");
+
+    if (data.propV_hands) props.push(data.propV_hands);
+    if (data.propV_size) props.push(data.propV_size);
+    if (data.propV_Proofing) props.push(data.propV_Proofing + " Tier Armor Proofing");
+    if (data.propV_Status) props.push(data.propV_Status);
+    if (data.propV_Rune) props.push(data.propV_Rune + " Rune");
+    if (data.propV_Weapon_Type) props.push(data.propV_Weapon_Type);
+    if (data.source) props.push("Source: " + data.source);
+    if (data.cost) props.push("Cost: " + data.cost);
+
+    // modifiers
+    var mods = [];
+    Object.keys(data)
+      .filter((x) => x.indexOf("mod_") === 0 && data[x])
+      .forEach((x) => {
+        mods.push(x.substring(4).replaceAll("_", " ") + ": " + data[x]);
+      });
+
+    if (data.modV_StealthDisadvantage) mods.push("Stealth:Disadvantage");
+    if (data.modV_Spell_Attack) mods.push("Spell Attack " + getSignedString(data.modV_Spell_Attack));
+    if (data.modV_Spell_DC) mods.push("Spell DC " + getSignedString(data.modV_Spell_DC));
+    if (data.modV_Weapon_Attacks) mods.push("Weapon Attacks " + getSignedString(data.modV_Weapon_Attacks));
+    if (data.modV_Weapon_Damage) mods.push("Weapon Damage " + getSignedString(data.modV_Weapon_Damage));
+
+    data.abilities?.forEach((ability) => {
+      if (ability.type === "increase") mods.push(ability.ability + " " + getSignedString(ability.value));
+      else if (ability.type === "set") mods.push(ability.ability + ": " + ability.value);
+    });
+
+    data.skills?.forEach((skill) => {
+      mods.push(skill.ability + " " + getSignedString(skill.value));
+    });
+
+    data.saves?.forEach((save) => {
+      mods.push(save.ability + " " + getSignedString(save.value));
+    });
+
+    // populate item fields
+    document.querySelector(".equipment .complex .repcontrol_add").click();
+    var itemContainer = document.querySelector(".equipment .complex .repcontainer").lastChild;
+    var roll20Item = itemContainer.querySelector(".item");
+    updateInput(roll20Item, 'input[name="attr_itemname"]', data.name);
+    if (data.count) updateInput(roll20Item, 'input[name="attr_itemcount"]', data.count);
+    if (data.weight) updateInput(roll20Item, 'input[name="attr_itemweight"]', data.weight);
+    if (data.isResource) updateCheckbox(roll20Item, 'input[name="attr_useasresource"]', data.isResource);
+    if (data.mod_Damage) updateCheckbox(roll20Item, 'input[name="attr_hasattack"]', data.mod_Damage);
+    updateTextArea(roll20Item, 'textarea[name="attr_itemcontent"]', data.description);
+
+    updateInput(roll20Item, 'input[name="attr_itemproperties"]', props.join(", "));
+    updateInput(roll20Item, 'input[name="attr_itemmodifiers"]', mods.join(", "));
+  }
+
   function importTrait(data) {
     document.querySelector(".traits .complex .repcontrol_add").click();
 
@@ -128,7 +194,7 @@ var CompendiumImport = (function () {
     updateSelect(
       roll20Trait,
       'select[name="attr_source"]',
-      data.type.replace(/^./, (char) => char.toUpperCase())
+      data.type.replace(/^./, (char) => char.toUpperCase()),
     );
     updateInput(roll20Trait, 'input[name="attr_source_type"]', data.source);
     updateTextArea(roll20Trait, 'textarea[name="attr_description"]', data.description);
@@ -173,12 +239,12 @@ var CompendiumImport = (function () {
     updateSelect(
       roll20Spell,
       'select[name="attr_spellhldietype"]',
-      /d(\d+)/.exec(spellData.higherRoll)?.[0]?.toLowerCase() ?? ""
+      /d(\d+)/.exec(spellData.higherRoll)?.[0]?.toLowerCase() ?? "",
     );
     updateInput(
       roll20Spell,
       'input[name="attr_spellhlbonus"]',
-      /([+-]\s?\d+)?$/.exec(spellData.higherRoll)?.[0]?.replaceAll(" ", "") ?? ""
+      /([+-]\s?\d+)?$/.exec(spellData.higherRoll)?.[0]?.replaceAll(" ", "") ?? "",
     );
 
     if (spellData.damageRoll || spellData.healing)
@@ -221,6 +287,10 @@ var CompendiumImport = (function () {
       textArea.value = value;
       textArea.dispatchEvent(new Event("blur"));
     }
+  }
+
+  function getSignedString(n) {
+    return (n < 0 ? "" : "+") + n;
   }
 
   var CompendiumImport = {

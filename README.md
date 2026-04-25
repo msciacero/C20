@@ -18,7 +18,7 @@ _3rd Party Libraries_
 -Sortable.js by RubaXa & owenm (https://github.com/SortableJS/Sortable) - Custom journal drag & drop
 
 // TODO List
-Compendium: Species, Items
+Compendium: Classes, Species, Items, Monsters
 Compendium: Advanced filter
 Mini Notes: rebuild with nested accordion groups (parent/child)
 Settings: add saved data editor

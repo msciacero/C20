@@ -1,5 +1,5 @@
 var Compendium = (function () {
-  var dragList = ["background", "feat", "spell"];
+  var dragList = ["background", "feat", "item", "spell"];
   var settings = {
     origin: "",
     game: "",
@@ -183,7 +183,7 @@ var Compendium = (function () {
         StorageHelper.dbNames.compendiums,
         settings.game,
         "names",
-        range
+        range,
       );
 
       if (results.length === 0) {
@@ -430,8 +430,66 @@ var Compendium = (function () {
     var data = await StorageHelper.getItem(StorageHelper.dbNames.compendiums, settings.game, id);
 
     if (data.type === "condition") new ModalHelper(data.groupName ? data.groupName : data.name, displayStandard(data));
+    else if (data.type === "item") new ModalHelper(data.name, displayItem(data));
     else if (data.type === "spell") new ModalHelper(data.name, displaySpell(data));
     else new ModalHelper(data.name, displayStandard(data));
+  }
+
+  function displayItem(data) {
+    var container = document.createElement("div");
+
+    if (data.prop_Item_Type) container.appendChild(createLabelDisplay("Item Type", data.prop_Item_Type));
+    if (data.cost) container.appendChild(createLabelDisplay("Cost", data.cost));
+    if (data.count && data.count > 1) container.appendChild(createLabelDisplay("Count", data.count));
+    if (data.weight)
+      container.appendChild(
+        createLabelDisplay("Weight", data.weight <= 1 ? `${data.weight} lb` : `${data.weight} lbs`),
+      );
+    if (data.propV_magical) container.appendChild(createLabelDisplay("Magical", data.propV_magical));
+    if (data.mod_AC) container.appendChild(createLabelDisplay("AC", data.mod_AC));
+
+    // primary damage
+    if (data.mod_Damage) {
+      var text = data.mod_Damage_Type ? `${data.mod_Damage} ${data.mod_Damage_Type}` : data.mod_Damage;
+      if (data.mod_Secondary_Damage) text += ` / ${data.mod_Secondary_Damage} ${data.mod_Secondary_Damage_Type}`;
+      container.appendChild(createLabelDisplay("Damage", text));
+    }
+
+    // alternate damage
+    if (data.mod_Alternate_Damage) {
+      var text = data.mod_Alternate_Damage_Type
+        ? `${data.mod_Alternate_Damage} ${data.mod_Alternate_Damage_Type}`
+        : data.mod_Alternate_Damage;
+      if (data.mod_Alternate_Secondary_Damage)
+        text += ` / ${data.mod_Alternate_Secondary_Damage} ${data.mod_Alternate_Secondary_Damage_Type}`;
+      container.appendChild(createLabelDisplay("Two-Handed Damage", text));
+    }
+
+    if (data.mod_Weapon_Attacks) container.appendChild(createLabelDisplay("Attack Bonus", data.mod_Weapon_Attacks));
+    if (data.mod_Weapon_Damage) container.appendChild(createLabelDisplay("Damage Bonus", data.mod_Weapon_Damage));
+    if (data.mod_Spell_Attack) container.appendChild(createLabelDisplay("Spell Attack Bonus", data.mod_Spell_Attack));
+    if (data.mod_Spell_DC) container.appendChild(createLabelDisplay("Spell DC Bonus", data.mod_Spell_DC));
+    if (data.mod_Range) container.appendChild(createLabelDisplay("Range", data.mod_Range));
+
+    var props = [];
+    if (data.mod_StealthDisadvantage) props.push("Stealth Disadvantage");
+    if (data.propV_hands) props.push(data.propV_hands);
+    if (data.propV_size) props.push(data.propV_size);
+    if (data.prop_Finesse) props.push("Finesse");
+    if (data.prop_Thrown) props.push("Thrown");
+    if (data.prop_Ammunition) props.push("Ammunition");
+    if (data.prop_Loading) props.push("Loading");
+    if (data.prop_Silvered) props.push("Silvered");
+    if (data.prop_Reach) props.push("Reach");
+    if (data.prop_Special) props.push("Special");
+    if (props.length > 0) container.appendChild(createLabelDisplay("Properties", props.sort().join(", ")));
+
+    var description = document.createElement("div");
+    description.style.marginTop = "10px";
+    description.appendChild(createMarkdownDisplay(data.description));
+    container.appendChild(description);
+
+    return container;
   }
 
   function displayStandard(data) {

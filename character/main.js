@@ -51,6 +51,7 @@ async function init() {
   Traits.init();
   MiniNotes.init();
   CompendiumImport.init();
+  Inventory.init();
   levelEvent();
 }
 

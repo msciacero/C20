@@ -263,3 +263,114 @@ html.dark .c20-modal-card > div:last-of-type {
   background-color: #1f1f1f;
   background-blend-mode: screen;
 }
+
+.c20-form {
+  padding-right: 10px;
+}
+
+.c20-form input,
+.c20-form select,
+.c20-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.c20-form input {
+  height: 28px;
+}
+
+.c20-form .input-display:has(input) {
+  margin-bottom: 10px;
+}
+
+.c20-form .input-display > input[type="checkbox"] {
+  margin: 0 5px 0 0;
+  display: inline-block;
+}
+
+.c20-form .input-display:has(input[type="checkbox"]) > label {
+  padding: 5px 0 0;
+  display: inline-block;
+}
+
+.c20-form details {
+  margin-bottom: 10px;
+}
+
+.c20-form summary {
+  display: list-item;
+}
+
+.c20-col-2,
+.c20-col-3,
+.c20-col-4 {
+  display: grid;
+  grid-template-rows: auto auto;
+  column-gap: 20px;
+}
+
+.c20-col-4 {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.c20-col-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.c20-col-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (width <= 700px) {
+  .c20-col-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .c20-col-3,
+  .c20-col-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.c20-tab-buttons {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.c20-tab-button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+.c20-tab-button:hover {
+  background-color: #ddd;
+}
+
+.c20-tab-button.active {
+  background-color: #ccc;
+}
+
+.c20-tab-panel {
+  display: none;
+}
+
+.c20-tab-panel.active {
+  display: block;
+  margin-top: 10px;
+}
+
+#compendium-editor legend {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+#compendium-editor fieldset:not(:last-of-type) {
+  margin-bottom: 10px;
+}

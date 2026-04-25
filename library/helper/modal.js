@@ -1,5 +1,5 @@
 class ModalHelper {
-  constructor(title, body) {
+  constructor(title, body, closeCallback = null) {
     this.modal = null;
     this.settings = {
       isDragging: false,
@@ -10,10 +10,10 @@ class ModalHelper {
       initialHeight: 0,
     };
 
-    this.createCardModal(title, body);
+    this.createCardModal(title, body, closeCallback);
   }
 
-  createCardModal(title, body) {
+  createCardModal(title, body, closeCallback) {
     this.modal = document.createElement("div");
 
     this.modal.className = `ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable c20-modal-card`;
@@ -46,6 +46,7 @@ class ModalHelper {
     closeAnchor.setAttribute("role", "button");
     closeAnchor.appendChild(close);
     closeAnchor.addEventListener("click", function (e) {
+      if (closeCallback) closeCallback();
       e.target.closest(".ui-dialog").remove();
       document.removeEventListener("mousemove", this.mouseMoveDrag);
       document.removeEventListener("mousemove", this.mouseUpDrag);
