@@ -26,7 +26,7 @@ function createItemEditor(data) {
       ],
     }),
   );
-  itemGroup.appendChild(createTextInput({ name: "count", title: "Count", value: data.count, required: true }));
+  itemGroup.appendChild(createTextInput({ name: "count", title: "Quantity", value: data.count, required: true }));
   itemGroup.appendChild(createTextInput({ name: "weight", title: "Weight", value: data.weight, placeHolder: "1" }));
   itemGroup.appendChild(createTextInput({ name: "cost", title: "Cost", value: data.cost, placeHolder: "20g" }));
   editor.appendChild(itemGroup);
@@ -62,7 +62,13 @@ function createItemEditor(data) {
   abilities.appendChild(createSaveProperties(data));
   abilities.appendChild(createSkillProperties(data));
 
+  var heavyArmsNote = document.createElement("div");
+  heavyArmsNote.style.fontStyle = "italic";
+  heavyArmsNote.style.marginBottom = "10px";
+  heavyArmsNote.textContent = "This is only for tracking upgrades. It does not modify item stats.";
+
   var heavyArms = document.createElement("div");
+  heavyArms.appendChild(heavyArmsNote);
   heavyArms.appendChild(createArmorerArmorProperties(data));
   heavyArms.appendChild(createArmorerWeaponProperties(data));
   heavyArms.appendChild(createArmorerMaterialsProperties(data));
@@ -139,7 +145,7 @@ function createAbilityProperties(data) {
   abilityGroup.appendChild(abilityContainer);
 
   var legend = document.createElement("legend");
-  legend.textContent = "Ability Score Improvements";
+  legend.textContent = "Ability Score Modifiers";
 
   var fieldSet = document.createElement("fieldset");
   fieldSet.appendChild(legend);
@@ -169,7 +175,7 @@ function createSkillProperties(data) {
   abilityGroup.appendChild(abilityContainer);
 
   var legend = document.createElement("legend");
-  legend.textContent = "Skill Improvements";
+  legend.textContent = "Skill Modifiers";
 
   var fieldSet = document.createElement("fieldset");
   fieldSet.appendChild(legend);
@@ -199,7 +205,7 @@ function createSaveProperties(data) {
   abilityGroup.appendChild(abilityContainer);
 
   var legend = document.createElement("legend");
-  legend.textContent = "Save Improvements";
+  legend.textContent = "Saving Throw Modifiers";
 
   var fieldSet = document.createElement("fieldset");
   fieldSet.appendChild(legend);
@@ -393,7 +399,7 @@ function createWeaponProperties(data) {
     createTextInput({
       name: "modV_Weapon_Attacks",
       title: "Attack Modifier",
-      value: data.mod_Weapon_Attacks,
+      value: data.modV_Weapon_Attacks,
     }),
   );
 
@@ -401,7 +407,7 @@ function createWeaponProperties(data) {
     createTextInput({
       name: "modV_Weapon_Damage",
       title: "Damage Modifier",
-      value: data.mod_Weapon_Damage,
+      value: data.modV_Weapon_Damage,
     }),
   );
 
@@ -416,10 +422,10 @@ function createWeaponProperties(data) {
     }),
   );
 
-  if (data.hands !== "versatile") attackSecondaryGroup.style.display = "none";
+  if (data.propV_hands !== "Versatile") attackSecondaryGroup.style.display = "none";
 
-  weaponGroup.childNodes[0].addEventListener("change", function (event) {
-    if (event.target.value === "Versatile") attackSecondaryGroup.style.display = "block";
+  weaponGroup.childNodes[1].addEventListener("change", function (event) {
+    if (event.target.value === "Versatile") attackSecondaryGroup.style.display = "grid";
     else attackSecondaryGroup.style.display = "none";
   });
 
@@ -433,14 +439,14 @@ function createArmorerArmorProperties(data) {
 
   var proofing = createRadioInputGroup({
     title: "",
-    name: "propV_Proofing",
+    name: "propV_HAA_Proofing",
     options: [
       { value: "", name: "No Armor Proofing" },
       { value: "1st", name: "1st Tier" },
       { value: "2nd", name: "2nd Tier" },
       { value: "3rd", name: "3rd Tier" },
     ],
-    selectedValue: data.propV_Proofing,
+    selectedValue: data.propV_HAA_Proofing,
     inline: true,
   });
   proofing.style.marginBottom = "10px";
@@ -450,40 +456,44 @@ function createArmorerArmorProperties(data) {
   armorBoxes.className = "c20-col-3";
 
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Breathable", title: "Breathable", value: data.prop_Breathable }),
+    createCheckboxInput({ name: "prop_HAA_Breathable", title: "Breathable", value: data.prop_HAA_Breathable }),
   );
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Burnished", title: "Burnished", value: data.prop_Burnished }),
+    createCheckboxInput({ name: "prop_HAA_Burnished", title: "Burnished", value: data.prop_HAA_Burnished }),
   );
   armorBoxes.appendChild(
     createCheckboxInput({
-      name: "prop_Climbing_Harness",
+      name: "prop_HAA_Climbing_Harness",
       title: "Climbing Harness",
-      value: data.prop_Climbing_Harness,
+      value: data.prop_HAA_Climbing_Harness,
     }),
   );
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Decorated", title: "Decorated", value: data.prop_Decorated }),
+    createCheckboxInput({ name: "prop_HAA_Decorated", title: "Decorated", value: data.prop_HAA_Decorated }),
   );
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Insulated", title: "Insulated", value: data.prop_Insulated }),
+    createCheckboxInput({ name: "prop_HAA_Insulated", title: "Insulated", value: data.prop_HAA_Insulated }),
   );
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Locking", title: "Locking joints", value: data.prop_Locking }),
+    createCheckboxInput({ name: "prop_HAA_Locking", title: "Locking joints", value: data.prop_HAA_Locking }),
   );
-  armorBoxes.appendChild(createCheckboxInput({ name: "prop_Muffled", title: "Muffled", value: data.prop_Muffled }));
+  armorBoxes.appendChild(
+    createCheckboxInput({ name: "prop_HAA_Muffled", title: "Muffled", value: data.prop_HAA_Muffled }),
+  );
   armorBoxes.appendChild(
     createCheckboxInput({
-      name: "prop_Quick_Release",
+      name: "prop_HAA_Quick_Release",
       title: "Quick-release clasps",
-      value: data.prop_Quick_Release,
+      value: data.prop_HAA_Quick_Release,
     }),
   );
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Reinforced", title: "Reinforced", value: data.prop_Reinforced }),
+    createCheckboxInput({ name: "prop_HAA_Reinforced", title: "Reinforced", value: data.prop_HAA_Reinforced }),
   );
-  armorBoxes.appendChild(createCheckboxInput({ name: "prop_Runic", title: "Runic", value: data.prop_Runic }));
-  armorBoxes.appendChild(createCheckboxInput({ name: "prop_Spiked", title: "Spiked", value: data.prop_Spiked }));
+  armorBoxes.appendChild(createCheckboxInput({ name: "prop_HAA_Runic", title: "Runic", value: data.prop_HAA_Runic }));
+  armorBoxes.appendChild(
+    createCheckboxInput({ name: "prop_HAA_Spiked", title: "Spiked", value: data.prop_HAA_Spiked }),
+  );
   armorGuide.appendChild(armorBoxes);
 
   var legend = document.createElement("legend");
@@ -504,36 +514,54 @@ function createArmorerWeaponProperties(data) {
   var weaponTier1Title = document.createElement("div");
   weaponTier1Title.textContent = "Tier 1";
   weaponTier1.appendChild(weaponTier1Title);
-  weaponTier1.appendChild(createCheckboxInput({ name: "prop_Balanced", title: "Balanced", value: data.prop_Balanced }));
-  weaponTier1.appendChild(createCheckboxInput({ name: "prop_Critical", title: "Critical", value: data.prop_Critical }));
-  weaponTier1.appendChild(createCheckboxInput({ name: "prop_Runic", title: "Runic", value: data.prop_Runic }));
-  weaponTier1.appendChild(createCheckboxInput({ name: "prop_Silvered", title: "Silvered", value: data.prop_Silvered }));
-  weaponTier1.appendChild(createCheckboxInput({ name: "prop_Wounding", title: "Wounding", value: data.prop_Wounding }));
+  weaponTier1.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Balanced", title: "Balanced", value: data.prop_HAW_Balanced }),
+  );
+  weaponTier1.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Critical", title: "Critical", value: data.prop_HAW_Critical }),
+  );
+  weaponTier1.appendChild(createCheckboxInput({ name: "prop_HAW_Runic", title: "Runic", value: data.prop_HAW_Runic }));
+  weaponTier1.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Silvered", title: "Silvered", value: data.prop_HAW_Silvered }),
+  );
+  weaponTier1.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Wounding", title: "Wounding", value: data.prop_HAW_Wounding }),
+  );
   weaponGuide.appendChild(weaponTier1);
 
   var weaponTier2 = document.createElement("div");
   var weaponTier2Title = document.createElement("div");
   weaponTier2Title.textContent = "Tier 2";
   weaponTier2.appendChild(weaponTier2Title);
-  weaponTier2.appendChild(createCheckboxInput({ name: "prop_Brutal", title: "Brutal", value: data.prop_Brutal }));
   weaponTier2.appendChild(
-    createCheckboxInput({ name: "prop_Enchanted", title: "Enchanted", value: data.prop_Enchanted }),
+    createCheckboxInput({ name: "prop_HAW_Brutal", title: "Brutal", value: data.prop_HAW_Brutal }),
   );
-  weaponTier2.appendChild(createCheckboxInput({ name: "prop_Flanged", title: "Flanged", value: data.prop_Flanged }));
-  weaponTier2.appendChild(createCheckboxInput({ name: "prop_Magical", title: "Magical", value: data.prop_Magical }));
   weaponTier2.appendChild(
-    createCheckboxInput({ name: "prop_Sawtooth", title: "Saw-toothed", value: data.prop_Sawtooth }),
+    createCheckboxInput({ name: "prop_HAW_Enchanted", title: "Enchanted", value: data.prop_HAW_Enchanted }),
   );
-  weaponTier2.appendChild(createCheckboxInput({ name: "prop_Superior", title: "Superior", value: data.prop_Superior }));
+  weaponTier2.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Flanged", title: "Flanged", value: data.prop_HAW_Flanged }),
+  );
+  weaponTier2.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Magical", title: "Magical", value: data.prop_HAW_Magical }),
+  );
+  weaponTier2.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Sawtooth", title: "Saw-toothed", value: data.prop_HAW_Sawtooth }),
+  );
+  weaponTier2.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Superior", title: "Superior", value: data.prop_HAW_Superior }),
+  );
   weaponGuide.appendChild(weaponTier2);
 
   var weaponTier3 = document.createElement("div");
   var weaponTier3Title = document.createElement("div");
   weaponTier3Title.textContent = "Tier 3";
   weaponTier3.appendChild(weaponTier3Title);
-  weaponTier3.appendChild(createCheckboxInput({ name: "prop_Arcane", title: "Arcane", value: data.prop_Arcane }));
   weaponTier3.appendChild(
-    createCheckboxInput({ name: "prop_Masterwork", title: "Masterwork", value: data.prop_Masterwork }),
+    createCheckboxInput({ name: "prop_HAW_Arcane", title: "Arcane", value: data.prop_HAW_Arcane }),
+  );
+  weaponTier3.appendChild(
+    createCheckboxInput({ name: "prop_HAW_Masterwork", title: "Masterwork", value: data.prop_HAW_Masterwork }),
   );
   weaponGuide.appendChild(weaponTier3);
 
@@ -555,22 +583,28 @@ function createArmorerMaterialsProperties(data) {
   armorBoxes.className = "c20-col-3";
 
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Adamantine", title: "Adamantine", value: data.prop_Adamantine }),
+    createCheckboxInput({ name: "prop_HAM_Adamantine", title: "Adamantine", value: data.prop_HAM_Adamantine }),
   );
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Cold_Iron", title: "Cold Iron", value: data.prop_Cold_Iron }),
-  );
-  armorBoxes.appendChild(createCheckboxInput({ name: "prop_Darkwood", title: "Darkwood", value: data.prop_Darkwood }));
-  armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Deep_Crystal", title: "Deep Crystal", value: data.prop_Deep_Crystal }),
+    createCheckboxInput({ name: "prop_HAM_Cold_Iron", title: "Cold Iron", value: data.prop_HAM_Cold_Iron }),
   );
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Dragonhide", title: "Dragonhide", value: data.prop_Dragonhide }),
+    createCheckboxInput({ name: "prop_HAM_Darkwood", title: "Darkwood", value: data.prop_HAM_Darkwood }),
   );
-  armorBoxes.appendChild(createCheckboxInput({ name: "prop_Ironwood", title: "Ironwood", value: data.prop_Ironwood }));
-  armorBoxes.appendChild(createCheckboxInput({ name: "prop_Mithral", title: "Mithral", value: data.prop_Mithral }));
   armorBoxes.appendChild(
-    createCheckboxInput({ name: "prop_Shadowsilk", title: "Shadowsilk", value: data.prop_Shadowsilk }),
+    createCheckboxInput({ name: "prop_HAM_Deep_Crystal", title: "Deep Crystal", value: data.prop_HAM_Deep_Crystal }),
+  );
+  armorBoxes.appendChild(
+    createCheckboxInput({ name: "prop_HAM_Dragonhide", title: "Dragonhide", value: data.prop_HAM_Dragonhide }),
+  );
+  armorBoxes.appendChild(
+    createCheckboxInput({ name: "prop_HAM_Ironwood", title: "Ironwood", value: data.prop_HAM_Ironwood }),
+  );
+  armorBoxes.appendChild(
+    createCheckboxInput({ name: "prop_HAM_Mithral", title: "Mithral", value: data.prop_HAM_Mithral }),
+  );
+  armorBoxes.appendChild(
+    createCheckboxInput({ name: "prop_HAM_Shadowsilk", title: "Shadowsilk", value: data.prop_HAM_Shadowsilk }),
   );
 
   armorGuide.appendChild(armorBoxes);
@@ -591,14 +625,14 @@ function createArmorerStatusProperties(data) {
 
   var proofing = createRadioInputGroup({
     title: "",
-    name: "propV_Status",
+    name: "propV_HAS_Status",
     options: [
       { value: "", name: "No Damage" },
       { value: "Worn", name: "Worn/Sundered" },
       { value: "Damaged", name: "Damaged" },
       { value: "Broken", name: "Broken" },
     ],
-    selectedValue: data.propV_Status,
+    selectedValue: data.propV_HAS_Status,
     inline: true,
   });
   proofing.style.marginBottom = "10px";
@@ -606,9 +640,9 @@ function createArmorerStatusProperties(data) {
 
   armorGuide.appendChild(
     createSelectInput({
-      name: "propV_Rune",
+      name: "propV_HAS_Rune",
       title: "Rune",
-      value: data.propV_Rune,
+      value: data.propV_HAS_Rune,
       options: [
         { name: "Alchemist", value: "Alchemist" },
         { name: "Arrow-Catcher", value: "Arrow-Catcher" },
@@ -728,6 +762,7 @@ function createSkillInput({ ability = "", value = "" } = {}) {
       value: ability,
       required: true,
       options: [
+        { name: "All Abilities", value: "Ability Checks" },
         { name: "Acrobatics", value: "Acrobatics" },
         { name: "Animal Handling", value: "Animal Handling" },
         { name: "Arcana", value: "Arcana" },
@@ -779,16 +814,17 @@ function createSaveInput({ ability = "", value = "" } = {}) {
   group.appendChild(
     createSelectInput({
       name: "saves[]",
-      title: "Ability",
+      title: "Saving Throw",
       value: ability,
       required: true,
       options: [
-        { name: "Strength", value: "Strength" },
-        { name: "Dexterity", value: "Dexterity" },
-        { name: "Constitution", value: "Constitution" },
-        { name: "Intelligence", value: "Intelligence" },
-        { name: "Wisdom", value: "Wisdom" },
-        { name: "Charisma", value: "Charisma" },
+        { name: "All Saves", value: "Saving Throws" },
+        { name: "Strength", value: "Strength Save" },
+        { name: "Dexterity", value: "Dexterity Save" },
+        { name: "Constitution", value: "Constitution Save" },
+        { name: "Intelligence", value: "Intelligence Save" },
+        { name: "Wisdom", value: "Wisdom Save" },
+        { name: "Charisma", value: "Charisma Save" },
       ],
     }),
   );

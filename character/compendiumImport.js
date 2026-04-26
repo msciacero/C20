@@ -122,7 +122,7 @@ var CompendiumImport = (function () {
     updateInput(header, 'input[name="attr_background"]', data.name);
   }
 
-  function importItem(data) {
+  function importItem(data, itemId = null) {
     // Properties (Versatile, Finesse, Thrown, heavy arms)
     var props = [];
     Object.keys(data)
@@ -136,9 +136,9 @@ var CompendiumImport = (function () {
 
     if (data.propV_hands) props.push(data.propV_hands);
     if (data.propV_size) props.push(data.propV_size);
-    if (data.propV_Proofing) props.push(data.propV_Proofing + " Tier Armor Proofing");
-    if (data.propV_Status) props.push(data.propV_Status);
-    if (data.propV_Rune) props.push(data.propV_Rune + " Rune");
+    if (data.propV_HAA_Proofing) props.push(data.propV_HAA_Proofing + " Tier Armor Proofing");
+    if (data.propV_HAS_Status) props.push("Status: " + data.propV_HAS_Status);
+    if (data.propV_HAS_Rune) props.push(data.propV_HAS_Rune + " Rune");
     if (data.propV_Weapon_Type) props.push(data.propV_Weapon_Type);
     if (data.source) props.push("Source: " + data.source);
     if (data.cost) props.push("Cost: " + data.cost);
@@ -154,12 +154,12 @@ var CompendiumImport = (function () {
     if (data.modV_StealthDisadvantage) mods.push("Stealth:Disadvantage");
     if (data.modV_Spell_Attack) mods.push("Spell Attack " + getSignedString(data.modV_Spell_Attack));
     if (data.modV_Spell_DC) mods.push("Spell DC " + getSignedString(data.modV_Spell_DC));
-    if (data.modV_Weapon_Attacks) mods.push("Weapon Attacks " + getSignedString(data.modV_Weapon_Attacks));
-    if (data.modV_Weapon_Damage) mods.push("Weapon Damage " + getSignedString(data.modV_Weapon_Damage));
+    mods.push("Weapon Attacks " + getSignedString(data.modV_Weapon_Attacks ?? 0));
+    mods.push("Weapon Damage " + getSignedString(data.modV_Weapon_Damage ?? 0));
 
     data.abilities?.forEach((ability) => {
-      if (ability.type === "increase") mods.push(ability.ability + " " + getSignedString(ability.value));
-      else if (ability.type === "set") mods.push(ability.ability + ": " + ability.value);
+      if (ability.type === "Increase") mods.push(ability.ability + " " + getSignedString(ability.value));
+      else if (ability.type === "Set") mods.push(ability.ability + ": " + ability.value);
     });
 
     data.skills?.forEach((skill) => {
@@ -171,18 +171,37 @@ var CompendiumImport = (function () {
     });
 
     // populate item fields
-    document.querySelector(".equipment .complex .repcontrol_add").click();
-    var itemContainer = document.querySelector(".equipment .complex .repcontainer").lastChild;
-    var roll20Item = itemContainer.querySelector(".item");
-    updateInput(roll20Item, 'input[name="attr_itemname"]', data.name);
-    if (data.count) updateInput(roll20Item, 'input[name="attr_itemcount"]', data.count);
-    if (data.weight) updateInput(roll20Item, 'input[name="attr_itemweight"]', data.weight);
-    if (data.isResource) updateCheckbox(roll20Item, 'input[name="attr_useasresource"]', data.isResource);
-    if (data.mod_Damage) updateCheckbox(roll20Item, 'input[name="attr_hasattack"]', data.mod_Damage);
-    updateTextArea(roll20Item, 'textarea[name="attr_itemcontent"]', data.description);
+    var roll20Item;
+    if (itemId) {
+      roll20Item = document.querySelector(`.equipment .complex .repitem[data-reprowid="${itemId}"] .item`);
+    } else {
+      document.querySelector(".equipment .complex .repcontrol_add").click();
+      var itemContainer = document.querySelector(".equipment .complex .repcontainer").lastChild;
+      roll20Item = itemContainer.querySelector(".item");
+    }
 
-    updateInput(roll20Item, 'input[name="attr_itemproperties"]', props.join(", "));
-    updateInput(roll20Item, 'input[name="attr_itemmodifiers"]', mods.join(", "));
+    var shouldHaveAttack = data.mod_Damage ? true : false;
+
+    updateInput(roll20Item, 'input[name="attr_itemname"]', data.name ?? "");
+    updateInput(roll20Item, 'input[name="attr_itemcount"]', data.count ?? "");
+    updateInput(roll20Item, 'input[name="attr_itemweight"]', data.weight.replace(/[^\d.-]/g, "") ?? "");
+    updateCheckbox(roll20Item, 'input[name="attr_useasresource"]', data.isResource ?? false);
+    updateTextArea(roll20Item, 'textarea[name="attr_itemcontent"]', data.description ?? "");
+    updateInput(roll20Item, 'input[name="attr_itemproperties"]', props.join(", ") ?? "");
+    updateInput(roll20Item, 'input[name="attr_itemmodifiers"]', mods.join(", ") ?? "");
+
+    if (itemId == null && shouldHaveAttack) {
+      if (shouldHaveAttack) updateCheckbox(roll20Item, 'input[name="attr_hasattack"]', shouldHaveAttack);
+      // if (data.propV_hands === "Versatile") {
+      //   createSecondAttackFromItem(data, roll20Item);
+      // }
+    } else if (itemId != null) {
+      var currentAttack = roll20Item.querySelector('input[name="attr_hasattack"]').checked;
+      if (currentAttack !== shouldHaveAttack) {
+        updateCheckbox(roll20Item, 'input[name="attr_hasattack"]', shouldHaveAttack);
+      }
+      //updateSecondAttackFromItem(data, roll20Item);
+    }
   }
 
   function importTrait(data) {
@@ -257,6 +276,90 @@ var CompendiumImport = (function () {
     Spells.updateSpellRow(spellItem.querySelector(".spell"));
   }
 
+  function createSecondAttackFromItem(data, roll20Item) {
+    var itemId = roll20Item.parentElement.getAttribute("data-reprowid").toLowerCase();
+    var element = `.attacks .repitem input[name="attr_itemid"][value="${itemId}"]`;
+
+    // wait for roll20 to finish creating the attack fields before trying to populate them
+    waitForElement(element).then(() => {
+      // create two handed attack but don't attach it to the item as it wil break item updates
+      document.querySelector(".attacks .repcontrol_add").click();
+
+      var attackContainer2 = document.querySelector(".attacks .repcontainer").lastChild;
+      updateInput(attackContainer2, 'input[name="attr_versatile_alt"]', "1");
+      updateInput(attackContainer2, 'input[name="attr_itemid"]', itemId);
+      attackContainer2.querySelector(".attack .options-flag").click();
+
+      updateSecondAttackFromItem(data, roll20Item);
+    });
+  }
+
+  function updateSecondAttackFromItem(data, roll20Item) {
+    var attackId = roll20Item.querySelector('input[name="attr_itemattackid"]').value;
+    var itemId = roll20Item.parentElement.getAttribute("data-reprowid").toLowerCase();
+    var attackElements = Array.from(
+      document.querySelectorAll(`.attacks .repitem input[name="attr_itemid"][value="${itemId}"]`),
+    );
+
+    var attackItem1 = attackElements
+      .find((el) => el.parentElement.getAttribute("data-reprowid") === attackId)
+      .parentElement.querySelector(".options");
+    var attackContainer2 = attackElements.find(
+      (el) => el.parentElement.getAttribute("data-reprowid") !== attackId,
+    ).parentElement;
+    var attackItem2 = attackContainer2.querySelector(".attack .options");
+    updateInput(attackItem2, 'input[name="attr_atkname"]', data.name + " (Two-Handed)");
+    copySelect(attackItem2, 'select[name="attr_atkattr_base"]', attackItem1);
+    copyInput(attackItem2, 'input[name="attr_atkmod"]', attackItem1);
+    copyCheckbox(attackItem2, 'input[name="attr_atkprofflag"]', attackItem1);
+    copyInput(attackItem2, 'input[name="attr_atkrange"]', attackItem1);
+    copyInput(attackItem2, 'input[name="attr_atkcritrange"]', attackItem1);
+    updateInput(attackItem2, 'input[name="attr_dmgbase"]', data.mod_Alternate_Damage);
+    copySelect(attackItem2, 'select[name="attr_dmgattr"]', attackItem1);
+    copyInput(attackItem2, 'input[name="attr_dmgmod"]', attackItem1);
+    updateInput(attackItem2, 'input[name="attr_dmgtype"]', data.mod_Alternate_Damage_Type);
+    copyInput(attackItem2, 'input[name="attr_dmgcustcrit"]', attackItem1);
+
+    updateCheckbox(attackItem2, 'input[name="attr_dmg2flag"]', data.mod_Alternate_Secondary_Damage ? true : false);
+    updateInput(attackItem2, 'input[name="attr_dmg2base"]', data.mod_Alternate_Secondary_Damage);
+    updateInput(attackItem2, 'input[name="attr_dmg2type"]', data.mod_Alternate_Secondary_Damage_Type);
+    if (data.mod_Alternate_Secondary_Damage) {
+      copySelect(attackItem2, 'select[name="attr_dmg2attr"]', attackItem1);
+      copyInput(attackItem2, 'input[name="attr_dmg2mod"]', attackItem1);
+      copyInput(attackContainer2, 'input[name="attr_dmg2custcrit"]', attackItem1);
+    } else {
+      updateSelect(attackItem2, 'select[name="attr_dmg2attr"]', "0");
+      updateInput(attackItem2, 'input[name="attr_dmg2mod"]', "");
+      updateInput(attackContainer2, 'input[name="attr_dmg2custcrit"]', "");
+    }
+    copyCheckbox(attackItem2, 'input[name="attr_saveflag"]', attackItem1);
+    copySelect(attackItem2, 'select[name="attr_saveattr"]', attackItem1);
+    copySelect(attackItem2, 'select[name="attr_savedc"]', attackItem1);
+    copyInput(attackItem2, 'input[name="attr_saveeffect"]', attackItem1);
+    copyTextArea(attackItem2, 'textarea[name="attr_atk_desc"]', attackItem1);
+    updateInput(attackItem1, 'input[name="attr_atkname"]', data.name + " (One-Handed)");
+  }
+
+  function copyInput(element, query, originalElement) {
+    var value = originalElement.querySelector(query).value;
+    updateInput(element, query, value);
+  }
+
+  function copySelect(element, query, originalElement) {
+    var value = originalElement.querySelector(query).value;
+    updateSelect(element, query, value);
+  }
+
+  function copyCheckbox(element, query, originalElement) {
+    var value = originalElement.querySelector(query).checked;
+    updateCheckbox(element, query, value);
+  }
+
+  function copyTextArea(element, query, originalElement) {
+    var value = originalElement.querySelector(query).value;
+    updateTextArea(element, query, value);
+  }
+
   function updateInput(element, query, value) {
     var input = element.querySelector(query);
     if (input && value) {
@@ -290,7 +393,8 @@ var CompendiumImport = (function () {
   }
 
   function getSignedString(n) {
-    return (n < 0 ? "" : "+") + n;
+    if (n.startsWith("+") || n.startsWith("-")) return n;
+    return "+" + n;
   }
 
   var CompendiumImport = {
@@ -298,6 +402,7 @@ var CompendiumImport = (function () {
     init: function init() {
       createDropZone();
     },
+    updateItem: importItem,
   };
   return CompendiumImport;
 })();
