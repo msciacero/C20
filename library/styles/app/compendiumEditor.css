@@ -1,0 +1,109 @@
+.modal#c20-editor-modal {
+  padding-top: 100px; /* Location of the box */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  z-index: 16000;
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.sheet-darkmode .modal-content {
+  background-color: rgb(51, 51, 51);
+}
+
+.modal-content .close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#delete-compendium-button {
+  font-family: "pictos";
+  height: 18px;
+  margin-top: 23px;
+}
+
+.progress-container {
+  position: absolute;
+  width: 96%;
+  height: 2px; /* Adjust height as needed */
+  overflow: hidden; /* Ensures the inner bar stays within the container */
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #5591d4; /* Green color, adjust as needed */
+  width: 0%; /* Initial width */
+  animation: fillProgress 3s forwards linear infinite; /* Animation properties */
+  display: none;
+}
+
+@keyframes fillProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%; /* Target width for the animation */
+  }
+}
+
+.c20-compendium-menu {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  z-index: 1;
+}
+
+.c20-compendium-menu select {
+  opacity: 0;
+  width: 160px;
+  cursor: pointer;
+}
+
+#c20-compendium .compendium-breadcrumb button,
+#c20-compendium:has(.compendium-pages__container) .compendium-breadcrumb > .compendium-title,
+#vm_compendium_panel:has(.compendium-pages__container) .c20-compendium-menu,
+#c20-compendium:has(#c20-compendium-pages div) #c20-compendium-categories {
+  display: none;
+}
+
+#c20-compendium:has(.compendium-pages__container) .compendium-breadcrumb .compendium-breadcrumb__back {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  padding: 0;
+  margin: 0;
+}
+
+#c20-compendium-modal-content input:disabled {
+  cursor: not-allowed;
+}
+
+#compendium-editor legend {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+#compendium-editor fieldset:not(:last-of-type) {
+  margin-bottom: 10px;
+}

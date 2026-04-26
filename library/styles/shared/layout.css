@@ -1,0 +1,30 @@
+.c20-col-2,
+.c20-col-3,
+.c20-col-4 {
+  display: grid;
+  grid-template-rows: auto auto;
+  column-gap: 20px;
+}
+
+.c20-col-4 {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.c20-col-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.c20-col-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (width <= 700px) {
+  .c20-col-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .c20-col-3,
+  .c20-col-2 {
+    grid-template-columns: 1fr;
+  }
+}

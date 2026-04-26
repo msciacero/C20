@@ -1,0 +1,40 @@
+#c20-journalfolderroot .c20-hidden {
+  display: none;
+}
+
+#c20-journalfolderroot.c20-toggle .c20-hidden {
+  opacity: 0.5;
+  display: block;
+}
+
+#c20-journalfolderroot.c20-toggle .c20-hidden .c20-hidden {
+  opacity: 1;
+  display: block;
+}
+
+#c20-journalfolderroot.c20-search-all .c20-hidden {
+  display: block;
+  opacity: 0.5;
+}
+
+#c20-journalfolderroot.c20-search-all .c20-hidden .c20-hidden {
+  opacity: 1;
+}
+
+#c20-journalfolderroot .c20-search-hidden {
+  display: none;
+}
+
+#journal-creation-controls .c20-lock-control {
+  position: absolute;
+  right: 10px;
+}
+
+#journal .ui-autocomplete-input {
+  width: calc(100% - 60px);
+  padding-right: 20px;
+}
+
+#journal .c20-hiddenToggle {
+  float: right;
+}

@@ -8,7 +8,6 @@
     {
       "matches": ["https://app.roll20.net/editor/"],
       "js": [
-        "mainApp.js",
         "components/compendium/compendium.js",
         "components/compendium/compendiumEditor.js",
         "components/compendium/editors/conditionsEditor.js",
@@ -23,17 +22,26 @@
         "components/shared/modal.js",
         "components/shared/storage.js",
         "components/shared/tab.js",
+        "components/shared/utilities.js",
         "library/external/sortable.js",
         "library/external/idb.js",
-        "library/external/pluralize.js"
+        "library/external/pluralize.js",
+        "mainApp.js"
       ],
-      "css": ["stylesApp.css"],
+      "css": [
+        "library/styles/app/compendiumEditor.css",
+        "library/styles/app/journal.css",
+        "library/styles/app/settings.css",
+        "library/styles/shared/formFields.css",
+        "library/styles/shared/layout.css",
+        "library/styles/shared/modal.css",
+        "library/styles/shared/tab.css"
+      ],
       "world": "ISOLATED"
     },
     {
       "matches": ["https://app.roll20.net/editor/character/*"],
       "js": [
-        "mainSheet.js",
         "components/compendium/editors/itemEditor.js",
         "components/compendium/compendiumImport.js",
         "components/settings/sheetSettings.js",
@@ -42,6 +50,7 @@
         "components/shared/modal.js",
         "components/shared/storage.js",
         "components/shared/tab.js",
+        "components/shared/utilities.js",
         "components/sheet/conditions.js",
         "components/sheet/defenses.js",
         "components/sheet/inventory.js",
@@ -50,9 +59,21 @@
         "components/sheet/traits.js",
         "library/external/sortable.js",
         "library/external/idb.js",
-        "library/external/expr-eval.js"
+        "library/external/expr-eval.js",
+        "mainSheet.js"
       ],
-      "css": ["stylesSheet.css"],
+      "css": [
+        "library/styles/shared/formFields.css",
+        "library/styles/shared/layout.css",
+        "library/styles/shared/modal.css",
+        "library/styles/shared/tab.css",
+        "library/styles/sheet/conditions.css",
+        "library/styles/sheet/defense.css",
+        "library/styles/sheet/miniNote.css",
+        "library/styles/sheet/settings.css",
+        "library/styles/sheet/spells.css",
+        "library/styles/sheet/traits.css"
+      ],
       "all_frames": true,
       "world": "ISOLATED"
     }

@@ -1,0 +1,33 @@
+.c20-tab-buttons {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.c20-tab-button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+.c20-tab-button:hover {
+  background-color: #ddd;
+}
+
+.c20-tab-button.active {
+  background-color: #ccc;
+}
+
+.c20-tab-panel {
+  display: none;
+}
+
+.c20-tab-panel.active {
+  display: block;
+  margin-top: 10px;
+}

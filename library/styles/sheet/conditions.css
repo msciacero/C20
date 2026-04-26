@@ -1,0 +1,120 @@
+.conditions:hover .options-flag + span {
+  display: flex;
+}
+
+.conditions .options-flag {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 18px !important;
+  height: 18px !important;
+  z-index: 2;
+  text-align: center;
+  font-size: 20;
+  border: none;
+  background: none;
+  border-radius: 0;
+  color: black;
+}
+
+.conditions .options-flag:hover + span {
+  color: black;
+}
+
+.sheet-darkmode .conditions .options-flag:hover + span {
+  color: #c6abd3;
+}
+
+.conditions {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 47px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 5px solid black;
+  border-image-source: url(https://app.roll20.net/images/dndstyling/5eBorder.svg);
+  border-image-slice: 6% 8% 12% 8%;
+  border-image-width: 16px 19px 35px 19px;
+  border-image-repeat: round;
+  border-radius: 10px;
+  position: relative;
+}
+
+.sheet-darkmode .conditions {
+  border-image-source: url(https://storage.googleapis.com/char-sheet-app-images-6e101411/D%26D5e/images/darkmode/5eBorder_dm.svg);
+  min-height: 50px;
+}
+
+.conditions .options .c20-checkbox-container {
+  margin-left: 15px;
+  column-count: 2;
+}
+
+.conditions .options .c20-label {
+  font-size: 9px;
+  font-weight: 700;
+  display: inline;
+  margin-left: 2px;
+}
+
+.conditions .c20-radio-container input[type="radio"] {
+  border: none;
+  appearance: none; /* Hides the default radio button */
+  -webkit-appearance: none; /* For older WebKit browsers */
+  -moz-appearance: none; /* For older Firefox */
+  /* Optional: hide visually but keep accessible */
+  /* opacity: 0; */
+  /* width: 0; */
+  /* height: 0; */
+}
+
+.conditions .c20-radio-container label {
+  display: inline-flex; /* Allows for easy alignment with text */
+  align-items: center;
+  cursor: pointer;
+  position: relative; /* For positioning the inner circle */
+  border-color: rgb(85, 85, 85);
+  border-width: 1px;
+  border-radius: 2px;
+  border-style: solid;
+  width: 3px;
+  padding-left: 7px;
+}
+
+.conditions .c20-radio-container input[type="radio"]:checked + label {
+  background-color: rgb(37, 130, 146);
+  color: white;
+}
+
+.conditions .c20-display {
+  margin-left: 20px;
+}
+
+.conditions .c20-display-list {
+  column-count: 2;
+  width: 100%;
+}
+
+.conditions .c20-effects-list {
+  font-size: 10px;
+}
+
+.conditions .label {
+  text-align: center !important;
+  display: inline-block;
+  width: 100%;
+}
+
+.conditions hr {
+  margin: 1px 0 5px;
+  width: 92%;
+}
+
+.c20-condition-group {
+  margin: 10px 0 0 20px;
+}
+
+.c20-condition-group:empty {
+  display: none;
+}

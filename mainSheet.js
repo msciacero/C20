@@ -1,24 +1,3 @@
-// initialization
-function waitForElement(selector) {
-  return new Promise((resolve) => {
-    var total = 0;
-    const interval = setInterval(() => {
-      const element = document.querySelector(selector);
-      if (element) {
-        clearInterval(interval);
-        resolve(element);
-      }
-      //Something is wrong, eject to prevent performance issues
-      if (total > 300) {
-        majorError = true;
-        clearInterval(interval);
-        throw "C20 rolled a natural 1: Page timeout";
-      }
-      total = total + 1;
-    }, 100);
-  });
-}
-
 function levelEvent() {
   var observer = new MutationObserver(async (mutationsList, _) => {
     var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");

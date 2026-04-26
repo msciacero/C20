@@ -1,0 +1,50 @@
+.c20-modal-card {
+  scrollbar-color: #8b8b8b #fcfcfc !important;
+}
+
+.c20-modal-card .c20-card-header {
+  padding: 5px 20px 0px;
+  border-bottom: 2px solid;
+  font-size: 25px;
+  cursor: move;
+}
+
+.c20-modal .c20-card-header {
+  cursor: default;
+}
+
+.c20-modal-card > div > div:last-child {
+  user-select: text;
+}
+
+.sheet-darkmode .c20-modal-card {
+  scrollbar-color: #9f9f9f #2c2c2c !important;
+  border-color: #1f1f1f;
+}
+
+.sheet-darkmode .c20-modal-card .ui-dialog-titlebar-close {
+  filter: invert(1);
+}
+
+.sheet-darkmode .c20-modal-card > div:first-of-type {
+  background-color: #1f1f1f;
+  color: #b3b3b3;
+}
+
+.sheet-darkmode .c20-modal-card > div:last-of-type {
+  background-color: #1f1f1f;
+  background-blend-mode: screen;
+}
+
+.sheet-darkmode .c20-modal-card .c20-card-header {
+  padding: 10px 20px;
+}
+
+html.dark .c20-modal-card .c20-card-header {
+  padding: 10px 20px;
+}
+
+html.dark .c20-modal-card > div:last-of-type {
+  background-color: #1f1f1f;
+  background-blend-mode: screen;
+}

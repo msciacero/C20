@@ -1,0 +1,211 @@
+.page.spells.c20-v2 .col {
+  width: 100%;
+  max-width: 100% !important;
+}
+
+.page.spells.c20-v2 .spell-level,
+.page.spells.c20-v2 .spell-labels {
+  width: 32.97%;
+}
+
+.c20-spellHeader {
+  width: calc(93% - 18px);
+  border-bottom: 1px solid rgb(211, 211, 211);
+}
+
+.c20-spellRow {
+  display: inline;
+}
+
+.page.spells.c20-v2 .spell-container:has(.display .prep-box) .c20-spellHeader {
+  width: calc(93% - 3px);
+}
+
+.page.spells.c20-v2 .spell-container:has(.repcontainer:empty) .c20-spellHeader {
+  display: none;
+}
+
+.c20-spellHeader .spellName,
+.c20-spellHeader .spellTime,
+.c20-spellHeader .spellRange,
+.c20-spellHeader .spellTarget,
+.c20-spellHeader .spellSavingThrow,
+.c20-spellHeader .spellRoll,
+.c20-spellHeader .spellEffect,
+.c20-spellHeader .spellDuration,
+.c20-spellHeader .spellComponents {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-left: 5px;
+}
+
+.page.spells.c20-v2 .spell-container .spell {
+  width: 100%;
+}
+
+.page.spells.c20-v2 .spell-container .spell .display .spellname,
+.c20-spellRow .spellTime,
+.c20-spellRow .spellRange,
+.c20-spellRow .spellTarget,
+.c20-spellRow .spellSavingThrow,
+.c20-spellRow .spellRoll,
+.c20-spellRow .spellEffect,
+.c20-spellRow .spellDuration {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 400;
+  padding-left: 5px;
+}
+
+.page.spells.c20-v2 .spell-container .spell .display .spellname,
+.c20-spellHeader .spellName {
+  display: inline-block;
+  width: 200px !important;
+  max-width: 200px !important;
+  padding-left: 5px;
+}
+
+.page.spells.c20-v2 .spell-container:has(.display .prep-box) .spell .display .spellname,
+.c20-spellHeader .spellName {
+  width: 184px !important;
+  max-width: 184px !important;
+}
+
+.c20-spellHeader .spellName {
+  padding-left: 21px;
+}
+
+.c20-spellHeader .spellName {
+  padding-left: 10px;
+  width: 195px !important;
+  max-width: 195px !important;
+}
+
+.page.spells.c20-v2 .spell-container .spell .display .innate {
+  display: none;
+}
+
+.c20-spellRow .spellTime,
+.c20-spellHeader .spellTime {
+  min-width: 60px !important;
+  max-width: 60px !important;
+}
+
+.c20-spellRow .spellRange,
+.c20-spellHeader .spellRange {
+  min-width: 100px !important;
+  max-width: 100px !important;
+}
+
+.c20-spellRow .spellTarget,
+.c20-spellHeader .spellTarget {
+  min-width: 150px !important;
+  max-width: 150px !important;
+}
+
+.c20-spellRow .spellSavingThrow,
+.c20-spellHeader .spellSavingThrow {
+  min-width: 40px !important;
+  max-width: 40px !important;
+}
+
+.c20-spellRow .spellSavingThrow {
+  text-transform: uppercase;
+}
+
+.c20-spellHeader .spellRoll,
+.c20-spellRow .spellRoll {
+  min-width: 40px !important;
+  max-width: 40px !important;
+}
+
+.c20-spellRow .spellEffect,
+.c20-spellHeader .spellEffect {
+  min-width: 84px !important;
+  max-width: 84px !important;
+}
+
+.c20-spellHeader .spellEffect {
+  min-width: 90px !important;
+  max-width: 90px !important;
+}
+
+.c20-spellRow .spellDuration,
+.c20-spellHeader .spellDuration {
+  width: 110px !important;
+  max-width: 110px !important;
+}
+
+.c20-spellFilter {
+  display: flow-root;
+  flex: auto;
+}
+
+.c20-spellFilter .filterBtn,
+.c20-spellFilter .resetBtn {
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgb(85, 85, 85);
+  border-radius: 5px;
+  color: black;
+  font-size: 13px;
+  font-weight: 700;
+  height: 18px;
+  width: 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  float: right;
+}
+
+.c20-spellFilter .filterBtn.active {
+  background-color: rgb(236, 33, 39);
+}
+
+.c20-spellFilter .filterBtn.active img {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(14%) saturate(0%) hue-rotate(313deg) brightness(101%)
+    contrast(101%);
+}
+
+.c20-spellFilter .resetBtn {
+  font-family: pictos;
+  position: absolute;
+  right: -23px;
+  padding: 0;
+  display: none;
+}
+
+.c20-spellFilter:has(.filterBtn.active) .resetBtn {
+  display: block;
+}
+
+.c20-spellFilter .inputContainer {
+  display: none;
+}
+
+.c20-spellFilter:has(.filterBtn.open) .inputContainer {
+  display: block;
+}
+
+.c20-spellFilter .inputContainer .selectContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
+.c20-spellFilter .inputContainer .checkboxContainer {
+  display: flex;
+  float: right;
+  column-count: 2;
+  column-gap: 10px;
+}
+
+.c20-spellFilter .c20-label {
+  font-size: 12px;
+  font-weight: 400;
+  display: inline;
+  margin-left: 2px;
+  text-transform: capitalize;
+}
