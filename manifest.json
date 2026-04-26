@@ -8,48 +8,51 @@
     {
       "matches": ["https://app.roll20.net/editor/"],
       "js": [
-        "app/main.js",
-        "app/components/settings.js",
-        "app/components/journal.js",
-        "app/components/compendium.js",
-        "app/components/compendiumEditor.js",
-        "app/components/savedData.js",
+        "mainApp.js",
+        "components/compendium/compendium.js",
+        "components/compendium/compendiumEditor.js",
+        "components/compendium/editors/conditionsEditor.js",
+        "components/compendium/editors/traitEditor.js",
+        "components/compendium/editors/itemEditor.js",
+        "components/compendium/editors/spellEditor.js",
+        "components/journal/journal.js",
+        "components/settings/appSettings.js",
+        "components/settings/savedData.js",
+        "components/shared/formFields.js",
+        "components/shared/markdown.js",
+        "components/shared/modal.js",
+        "components/shared/storage.js",
+        "components/shared/tab.js",
         "library/external/sortable.js",
         "library/external/idb.js",
-        "library/external/pluralize.js",
-        "library/helper/modal.js",
-        "library/helper/storage.js",
-        "library/helper/formFields.js",
-        "library/helper/markdown.js",
-        "library/helper/tab.js",
-        "library/shared/itemEditor.js"
+        "library/external/pluralize.js"
       ],
-      "css": ["app/styles.css"],
+      "css": ["stylesApp.css"],
       "world": "ISOLATED"
     },
     {
       "matches": ["https://app.roll20.net/editor/character/*"],
       "js": [
-        "character/conditions.js",
-        "character/defenses.js",
-        "character/miniNotes.js",
-        "character/spells.js",
-        "character/inventory.js",
-        "character/compendiumImport.js",
-        "character/characterSettings.js",
-        "character/traits.js",
-        "character/main.js",
+        "mainSheet.js",
+        "components/compendium/editors/itemEditor.js",
+        "components/compendium/compendiumImport.js",
+        "components/settings/sheetSettings.js",
+        "components/shared/formFields.js",
+        "components/shared/markdown.js",
+        "components/shared/modal.js",
+        "components/shared/storage.js",
+        "components/shared/tab.js",
+        "components/sheet/conditions.js",
+        "components/sheet/defenses.js",
+        "components/sheet/inventory.js",
+        "components/sheet/miniNotes.js",
+        "components/sheet/spells.js",
+        "components/sheet/traits.js",
         "library/external/sortable.js",
         "library/external/idb.js",
-        "library/external/expr-eval.js",
-        "library/helper/modal.js",
-        "library/helper/storage.js",
-        "library/helper/formFields.js",
-        "library/helper/markdown.js",
-        "library/helper/tab.js",
-        "library/shared/itemEditor.js"
+        "library/external/expr-eval.js"
       ],
-      "css": ["character/styles.css"],
+      "css": ["stylesSheet.css"],
       "all_frames": true,
       "world": "ISOLATED"
     }
@@ -57,10 +60,10 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "app/components/shared/campaignInfo.js",
+        "/library/data/campaignInfo.js",
+        "library/data/dnd2014/conditions.json",
         "library/icons/resistance.svg",
-        "library/icons/filter-solid-full.svg",
-        "library/data/dnd2014/conditions.json"
+        "library/icons/filter-solid-full.svg"
       ],
       "matches": ["https://app.roll20.net/*"]
     }
