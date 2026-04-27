@@ -1,0 +1,10 @@
+.c20-item-divider > .equipped,
+.c20-item-divider > .weight {
+  display: none;
+}
+
+.c20-item-divider > .name {
+  width: 100% !important;
+  text-align: center !important;
+  background: none !important;
+}

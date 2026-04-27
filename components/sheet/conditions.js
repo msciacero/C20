@@ -84,7 +84,7 @@ var Conditions = (function () {
 
     var groups = Object.groupBy(
       settings.conditions.filter((i) => i.groupName),
-      ({ groupName }) => groupName
+      ({ groupName }) => groupName,
     );
 
     Object.keys(groups).forEach((key) => {
@@ -287,7 +287,7 @@ var Conditions = (function () {
       StorageHelper.dbNames.characters,
       window.character_id,
       settings.playerConditions,
-      "conditions"
+      "conditions",
     );
   }
 
@@ -301,11 +301,7 @@ var Conditions = (function () {
   }
 
   async function getConditionCompendium() {
-    var characterSettings = await StorageHelper.getItem(
-      StorageHelper.dbNames.characters,
-      window.character_id,
-      "settings"
-    );
+    var characterSettings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
     return characterSettings.conditionCompendium;
   }
 
@@ -327,7 +323,7 @@ var Conditions = (function () {
         settings.conditions.some((condition) => {
           var conditionKey = condition.groupName ? `${condition.groupName}-${condition.name}` : condition.name;
           return conditionKey === key;
-        })
+        }),
       );
 
       createUi();

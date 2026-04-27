@@ -41,7 +41,7 @@ var Inventory = (function () {
       if (prop === "Magical") {
         data.propV_magical = "Yes";
       } else if (prop === "Magical (Attunement)") {
-        data.propV_magical = "Attunement";
+        data.propV_magical = "Requires Attunement";
       } else if (prop === "Simple" || prop === "Martial") {
         data.propV_Weapon_Type = prop;
       } else if (prop === "Two-Handed" || prop === "Versatile") {
@@ -168,10 +168,46 @@ var Inventory = (function () {
     CompendiumImport.updateItem(itemData, itemId);
   }
 
+  async function updateItemDisplay(item) {
+    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+    updateAccent(item.querySelector('input[name="attr_itemproperties"]'), settings);
+    updateDivider(item.querySelector('input[name="attr_itemmodifiers"]'));
+  }
+
+  function updateDivider(item) {
+    if (item.value.includes("Item Type: Divider")) item.closest(".item").classList.add("c20-item-divider");
+    else item.closest(".item").classList.remove("c20-item-divider");
+  }
+
+  function updateAccent(item, settings) {
+    var equippedElement = item.closest(".item").querySelector(".equipped.main");
+    if (item.value.includes("Magical (Attunement)") && settings.itemAttunementColor) {
+      equippedElement.style.setProperty("accent-color", settings.itemAttunementColor);
+    } else if (item.value.includes("Magical") && settings.itemMagicColor) {
+      equippedElement.style.setProperty("accent-color", settings.itemMagicColor);
+    } else {
+      equippedElement.style.removeProperty("accent-color");
+    }
+  }
+
+  async function updateAccents() {
+    var items = Array.from(document.querySelectorAll('.equipment .repitem .item input[name="attr_itemproperties"]'));
+    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+    items.forEach((item) => updateAccent(item, settings));
+  }
+
   var Inventory = {
     init: async function init() {
       document.querySelector(".page .equipment .complex").addEventListener("click", createUi);
+      await updateAccents();
+      Array.from(document.querySelectorAll('.equipment .repitem .item input[name="attr_itemmodifiers"]'))
+        .filter((item) => item.value.includes("Item Type: Divider"))
+        .forEach((item) => updateDivider(item));
     },
+    updateUi: async function updateUi() {
+      await updateAccents();
+    },
+    updateItemDisplay: updateItemDisplay,
     remove: function remove() {
       document.removeEventListener("click", createUi);
     },

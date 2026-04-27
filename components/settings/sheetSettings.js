@@ -9,6 +9,8 @@ var CharacterSettings = (function () {
     container.appendChild(createSpellFilterRow());
     container.appendChild(createSpellViewRow());
     container.appendChild(await createConditionsRow());
+    container.appendChild(createInventoryColorAttunementRow());
+    container.appendChild(createInventoryColorMagicRow());
     container.appendChild(createTitleRow());
 
     document.querySelector(".page.options .general_options").after(container);
@@ -80,6 +82,55 @@ var CharacterSettings = (function () {
     return row;
   }
 
+  function createInventoryColorAttunementRow() {
+    var row = document.createElement("div");
+    row.className = "row";
+
+    var span = document.createElement("span");
+    span.textContent = "Attunement Item Color:";
+    row.appendChild(span);
+
+    var input = document.createElement("input");
+    input.type = "text";
+    input.name = "settings-item-attunement-color";
+    input.placeholder = "CSS Supported Color";
+    input.value = settings.itemAttunementColor;
+    input.style.width = "122px";
+    row.appendChild(input);
+
+    input.addEventListener("input", async function (event) {
+      settings.itemAttunementColor = event.target.value;
+      await saveSettings();
+      await Inventory.updateUi();
+    });
+
+    return row;
+  }
+
+  function createInventoryColorMagicRow() {
+    var row = document.createElement("div");
+    row.className = "row";
+
+    var span = document.createElement("span");
+    span.textContent = "Magic Item Color:";
+    row.appendChild(span);
+
+    var input = document.createElement("input");
+    input.type = "text";
+    input.name = "settings-item-magic-color";
+    input.placeholder = "CSS Supported Color";
+    input.value = settings.itemMagicColor;
+    row.appendChild(input);
+
+    input.addEventListener("input", async function (event) {
+      settings.itemMagicColor = event.target.value;
+      await saveSettings();
+      await Inventory.updateUi();
+    });
+
+    return row;
+  }
+
   function createSpellFilterRow() {
     var row = document.createElement("div");
     row.className = "row";
@@ -142,11 +193,11 @@ var CharacterSettings = (function () {
   }
 
   async function saveSettings() {
-    await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.characters, window.character_id, settings, "settings");
+    await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.characters, "all", settings, "settings");
   }
 
   async function loadSettings() {
-    settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
+    settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
     var games = await StorageHelper.listObjectStores(StorageHelper.dbNames.compendiums);
 
     if (settings === undefined) settings = {};
@@ -155,6 +206,8 @@ var CharacterSettings = (function () {
     if (settings.defenses === undefined) settings.defenses = true;
     if (settings.spellFilter === undefined) settings.spellFilter = true;
     if (settings.spellView === undefined) settings.spellView = true;
+    if (settings.itemAttunementColor === undefined) settings.itemAttunementColor = "";
+    if (settings.itemMagicColor === undefined) settings.itemMagicColor = "";
     await saveSettings();
   }
 

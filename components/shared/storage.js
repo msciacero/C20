@@ -206,6 +206,10 @@ var StorageHelper = (function () {
   }
 
   async function initCharacter() {
+    if (!(await objectStoreExists(dbNames.characters, "all"))) {
+      await createObjectStoreIfNotExist(dbNames.characters, "all");
+    }
+
     if (!(await objectStoreExists(dbNames.characters, window.character_id))) {
       await createObjectStoreIfNotExist(dbNames.characters, window.character_id);
 

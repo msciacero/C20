@@ -107,18 +107,31 @@ input::placeholder {
   opacity: 70%;
 }
 
-html.dark .c20-combobox input:disabled {
+html.dark .c20-combobox input:disabled,
+.sheet-darkmod .c20-combobox input::placeholder:disabled {
   outline: #555;
   background-color: rgb(31, 31, 31);
   border-color: #868686;
 }
 
-html.dark .c20-combobox input::placeholder:disabled {
+html.dark .c20-combobox input::placeholder:disabled,
+.sheet-darkmode .c20-combobox input::placeholder:disabled {
   color: rgb(179, 179, 179);
 }
 
-html.dark .c20-combobox > div {
+html.dark .c20-combobox > div,
+.sheet-darkmode .c20-combobox > div {
   background-color: #353535;
   border: 1px solid #b3b3b3;
+  color: #b3b3b3;
+}
+
+html.dark .c20-form label,
+.sheet-darkmode .c20-form label {
+  color: #b3b3b3;
+}
+
+html.dark .c20-form legend,
+.sheet-darkmode .c20-form legend {
   color: #b3b3b3;
 }

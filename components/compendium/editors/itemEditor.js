@@ -20,9 +20,10 @@ function createItemEditor(data) {
         { name: "Light Armor", value: "Light Armor" },
         { name: "Medium Armor", value: "Medium Armor" },
         { name: "Heavy Armor", value: "Heavy Armor" },
+        { name: "Shield", value: "Shield" },
         { name: "Melee Weapon", value: "Melee Weapon" },
         { name: "Ranged Weapon", value: "Ranged Weapon" },
-        { name: "Shield", value: "Shield" },
+        { name: "Divider", value: "Divider" },
       ],
     }),
   );

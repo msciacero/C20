@@ -41,3 +41,7 @@
   margin-bottom: 5px;
   position: relative;
 }
+
+#c20-character-settings .row > :first-child {
+  padding-right: 5px;
+}

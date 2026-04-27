@@ -69,6 +69,7 @@
         "library/styles/shared/tab.css",
         "library/styles/sheet/conditions.css",
         "library/styles/sheet/defense.css",
+        "library/styles/sheet/inventory.css",
         "library/styles/sheet/miniNote.css",
         "library/styles/sheet/settings.css",
         "library/styles/sheet/spells.css",

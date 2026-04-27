@@ -132,7 +132,7 @@ var CompendiumImport = (function () {
       });
 
     if (data.propV_magical === "Yes") props.push("Magical");
-    else if (data.propV_magical === "Attunement") props.push("Magical (Attunement)");
+    else if (data.propV_magical === "Requires Attunement") props.push("Magical (Attunement)");
 
     if (data.propV_hands) props.push(data.propV_hands);
     if (data.propV_size) props.push(data.propV_size);
@@ -154,8 +154,8 @@ var CompendiumImport = (function () {
     if (data.modV_StealthDisadvantage) mods.push("Stealth:Disadvantage");
     if (data.modV_Spell_Attack) mods.push("Spell Attack " + getSignedString(data.modV_Spell_Attack));
     if (data.modV_Spell_DC) mods.push("Spell DC " + getSignedString(data.modV_Spell_DC));
-    mods.push("Weapon Attacks " + getSignedString(data.modV_Weapon_Attacks ?? 0));
-    mods.push("Weapon Damage " + getSignedString(data.modV_Weapon_Damage ?? 0));
+    if (data.modV_Weapon_Attacks) mods.push("Weapon Attacks " + getSignedString(data.modV_Weapon_Attacks));
+    if (data.modV_Weapon_Damage) mods.push("Weapon Damage " + getSignedString(data.modV_Weapon_Damage));
 
     data.abilities?.forEach((ability) => {
       if (ability.type === "Increase") mods.push(ability.ability + " " + getSignedString(ability.value));
@@ -202,6 +202,8 @@ var CompendiumImport = (function () {
       }
       //updateSecondAttackFromItem(data, roll20Item);
     }
+
+    Inventory.updateItemDisplay(roll20Item);
   }
 
   function importTrait(data) {
@@ -362,7 +364,7 @@ var CompendiumImport = (function () {
 
   function updateInput(element, query, value) {
     var input = element.querySelector(query);
-    if (input && value) {
+    if (input && value !== null && value !== undefined) {
       input.value = value;
       input.dispatchEvent(new Event("blur"));
     }
@@ -378,7 +380,7 @@ var CompendiumImport = (function () {
 
   function updateSelect(element, query, value) {
     var select = element.querySelector(query);
-    if (select && value) {
+    if (select && value !== null && value !== undefined) {
       select.value = value;
       select.dispatchEvent(new Event("change", { bubbles: true }));
     }
@@ -386,7 +388,7 @@ var CompendiumImport = (function () {
 
   function updateTextArea(element, query, value) {
     var textArea = element.querySelector(query);
-    if (textArea && value) {
+    if (textArea && value !== null && value !== undefined) {
       textArea.value = value;
       textArea.dispatchEvent(new Event("blur"));
     }
