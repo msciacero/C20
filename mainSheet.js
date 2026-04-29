@@ -31,6 +31,7 @@ async function init() {
   MiniNotes.init();
   CompendiumImport.init();
   Inventory.init();
+  Attacks.init();
   levelEvent();
 }
 

@@ -105,10 +105,10 @@ var Inventory = (function () {
         data.modV_Spell_Attack = parseInt(RegExp.$1);
       } else if (mod.match(/^Spell DC ([+-]?\d+)$/)) {
         data.modV_Spell_DC = parseInt(RegExp.$1);
-      } else if (mod.match(/^Weapon Attacks ([+-]?\d+)$/)) {
-        data.modV_Weapon_Attacks = parseInt(RegExp.$1);
-      } else if (mod.match(/^Weapon Damage ([+-]?\d+)$/)) {
-        data.modV_Weapon_Damage = parseInt(RegExp.$1);
+      } else if (mod.match(/^(Weapon|Melee|Ranged) Attacks[:]?\s([+-]?\d+)$/)) {
+        data.modV_Weapon_Attacks = parseInt(RegExp.$2);
+      } else if (mod.match(/^(Weapon|Melee|Ranged) Damage[:]?\s([+-]?\d+)$/)) {
+        data.modV_Weapon_Damage = parseInt(RegExp.$2);
       } else if (saves.some((sa) => mod.startsWith(sa))) {
         var ability = saves.find((sa) => mod.startsWith(sa));
         var value = parseInt(mod.match(/([+-]?\d+)$/)[1]);

@@ -1,0 +1,7 @@
+#c20-compendium .compendium-pages__container {
+  height: calc(100vh - 160px);
+}
+
+#c20-compendium .compendium-page {
+  height: 56px;
+}

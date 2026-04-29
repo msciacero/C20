@@ -29,6 +29,7 @@
         "mainApp.js"
       ],
       "css": [
+        "library/styles/app/compendium.css",
         "library/styles/app/compendiumEditor.css",
         "library/styles/app/journal.css",
         "library/styles/app/settings.css",
@@ -51,6 +52,7 @@
         "components/shared/storage.js",
         "components/shared/tab.js",
         "components/shared/utilities.js",
+        "components/sheet/attacks.js",
         "components/sheet/conditions.js",
         "components/sheet/defenses.js",
         "components/sheet/inventory.js",

@@ -123,7 +123,7 @@ var CompendiumImport = (function () {
   }
 
   function importItem(data, itemId = null) {
-    // Properties (Versatile, Finesse, Thrown, heavy arms)
+    // Properties
     var props = [];
     Object.keys(data)
       .filter((x) => x.indexOf("prop_") === 0 && data[x])
@@ -154,8 +154,10 @@ var CompendiumImport = (function () {
     if (data.modV_StealthDisadvantage) mods.push("Stealth:Disadvantage");
     if (data.modV_Spell_Attack) mods.push("Spell Attack " + getSignedString(data.modV_Spell_Attack));
     if (data.modV_Spell_DC) mods.push("Spell DC " + getSignedString(data.modV_Spell_DC));
-    if (data.modV_Weapon_Attacks) mods.push("Weapon Attacks " + getSignedString(data.modV_Weapon_Attacks));
-    if (data.modV_Weapon_Damage) mods.push("Weapon Damage " + getSignedString(data.modV_Weapon_Damage));
+
+    var attackType = data.prop_Thrown ? "Weapon" : data.mod_Item_Type.split(" ")[0];
+    if (data.modV_Weapon_Attacks) mods.push(`${attackType} Attacks ` + getSignedString(data.modV_Weapon_Attacks));
+    if (data.modV_Weapon_Damage) mods.push(`${attackType} Damage ` + getSignedString(data.modV_Weapon_Damage));
 
     data.abilities?.forEach((ability) => {
       if (ability.type === "Increase") mods.push(ability.ability + " " + getSignedString(ability.value));
@@ -174,6 +176,7 @@ var CompendiumImport = (function () {
     var roll20Item;
     if (itemId) {
       roll20Item = document.querySelector(`.equipment .complex .repitem[data-reprowid="${itemId}"] .item`);
+      resetAttackFromItem(data, itemId);
     } else {
       document.querySelector(".equipment .complex .repcontrol_add").click();
       var itemContainer = document.querySelector(".equipment .complex .repcontainer").lastChild;
@@ -187,8 +190,8 @@ var CompendiumImport = (function () {
     updateInput(roll20Item, 'input[name="attr_itemweight"]', data.weight.replace(/[^\d.-]/g, "") ?? "");
     updateCheckbox(roll20Item, 'input[name="attr_useasresource"]', data.isResource ?? false);
     updateTextArea(roll20Item, 'textarea[name="attr_itemcontent"]', data.description ?? "");
-    updateInput(roll20Item, 'input[name="attr_itemproperties"]', props.join(", ") ?? "");
-    updateInput(roll20Item, 'input[name="attr_itemmodifiers"]', mods.join(", ") ?? "");
+    updateInput(roll20Item, 'input[name="attr_itemproperties"]', props.join(",") ?? "");
+    updateInput(roll20Item, 'input[name="attr_itemmodifiers"]', mods.join(",") ?? "");
 
     if (itemId == null && shouldHaveAttack) {
       if (shouldHaveAttack) updateCheckbox(roll20Item, 'input[name="attr_hasattack"]', shouldHaveAttack);
@@ -278,88 +281,26 @@ var CompendiumImport = (function () {
     Spells.updateSpellRow(spellItem.querySelector(".spell"));
   }
 
-  function createSecondAttackFromItem(data, roll20Item) {
-    var itemId = roll20Item.parentElement.getAttribute("data-reprowid").toLowerCase();
-    var element = `.attacks .repitem input[name="attr_itemid"][value="${itemId}"]`;
+  function resetAttackFromItem(data, itemId) {
+    var roll20Item = document.querySelector(
+      `.attacks input[name="attr_itemid"][value="${itemId.toLowerCase()}"]`,
+    )?.parentElement;
 
-    // wait for roll20 to finish creating the attack fields before trying to populate them
-    waitForElement(element).then(() => {
-      // create two handed attack but don't attach it to the item as it wil break item updates
-      document.querySelector(".attacks .repcontrol_add").click();
-
-      var attackContainer2 = document.querySelector(".attacks .repcontainer").lastChild;
-      updateInput(attackContainer2, 'input[name="attr_versatile_alt"]', "1");
-      updateInput(attackContainer2, 'input[name="attr_itemid"]', itemId);
-      attackContainer2.querySelector(".attack .options-flag").click();
-
-      updateSecondAttackFromItem(data, roll20Item);
-    });
-  }
-
-  function updateSecondAttackFromItem(data, roll20Item) {
-    var attackId = roll20Item.querySelector('input[name="attr_itemattackid"]').value;
-    var itemId = roll20Item.parentElement.getAttribute("data-reprowid").toLowerCase();
-    var attackElements = Array.from(
-      document.querySelectorAll(`.attacks .repitem input[name="attr_itemid"][value="${itemId}"]`),
-    );
-
-    var attackItem1 = attackElements
-      .find((el) => el.parentElement.getAttribute("data-reprowid") === attackId)
-      .parentElement.querySelector(".options");
-    var attackContainer2 = attackElements.find(
-      (el) => el.parentElement.getAttribute("data-reprowid") !== attackId,
-    ).parentElement;
-    var attackItem2 = attackContainer2.querySelector(".attack .options");
-    updateInput(attackItem2, 'input[name="attr_atkname"]', data.name + " (Two-Handed)");
-    copySelect(attackItem2, 'select[name="attr_atkattr_base"]', attackItem1);
-    copyInput(attackItem2, 'input[name="attr_atkmod"]', attackItem1);
-    copyCheckbox(attackItem2, 'input[name="attr_atkprofflag"]', attackItem1);
-    copyInput(attackItem2, 'input[name="attr_atkrange"]', attackItem1);
-    copyInput(attackItem2, 'input[name="attr_atkcritrange"]', attackItem1);
-    updateInput(attackItem2, 'input[name="attr_dmgbase"]', data.mod_Alternate_Damage);
-    copySelect(attackItem2, 'select[name="attr_dmgattr"]', attackItem1);
-    copyInput(attackItem2, 'input[name="attr_dmgmod"]', attackItem1);
-    updateInput(attackItem2, 'input[name="attr_dmgtype"]', data.mod_Alternate_Damage_Type);
-    copyInput(attackItem2, 'input[name="attr_dmgcustcrit"]', attackItem1);
-
-    updateCheckbox(attackItem2, 'input[name="attr_dmg2flag"]', data.mod_Alternate_Secondary_Damage ? true : false);
-    updateInput(attackItem2, 'input[name="attr_dmg2base"]', data.mod_Alternate_Secondary_Damage);
-    updateInput(attackItem2, 'input[name="attr_dmg2type"]', data.mod_Alternate_Secondary_Damage_Type);
-    if (data.mod_Alternate_Secondary_Damage) {
-      copySelect(attackItem2, 'select[name="attr_dmg2attr"]', attackItem1);
-      copyInput(attackItem2, 'input[name="attr_dmg2mod"]', attackItem1);
-      copyInput(attackContainer2, 'input[name="attr_dmg2custcrit"]', attackItem1);
-    } else {
-      updateSelect(attackItem2, 'select[name="attr_dmg2attr"]', "0");
-      updateInput(attackItem2, 'input[name="attr_dmg2mod"]', "");
-      updateInput(attackContainer2, 'input[name="attr_dmg2custcrit"]', "");
+    if (roll20Item) {
+      if (!data.mod_Damage) updateInput(roll20Item, "input[name='attr_dmgbase']", "");
+      if (!data.mod_Damage_Type) updateInput(roll20Item, "input[name='attr_dmgtype']", "");
+      if (!data.mod_Secondary_Damage) updateInput(roll20Item, "input[name='attr_dmg2base']", "");
+      if (!data.mod_Secondary_Damage_Type) updateInput(roll20Item, "input[name='attr_dmg2type']", "");
+      if (!data.mod_Range) updateInput(roll20Item, "input[name='attr_atkrange']", "");
+      if (!data.modV_Weapon_Attacks) updateInput(roll20Item, "input[name='attr_atkmod']", "");
+      if (!data.modV_Weapon_Damage) updateInput(roll20Item, "input[name='attr_dmgmod']", "");
+      if (!data.mod_Critical_Range) updateInput(roll20Item, "input[name='attr_atkcritrange']", "");
+      if (!data.mod_Attack_Description) updateTextArea(roll20Item, 'textarea[name="attr_atk_desc"]', "");
+      if (!data.modV_Weapon_Attacks && !data.modV_Weapon_Damage)
+        updateInput(roll20Item, "input[name='attr_atkmagic']", "");
+      if (!data.mod_Secondary_Damage && !data.mod_Secondary_Damage_Type)
+        updateCheckbox(roll20Item, "input[name='attr_dmg2flag']", false);
     }
-    copyCheckbox(attackItem2, 'input[name="attr_saveflag"]', attackItem1);
-    copySelect(attackItem2, 'select[name="attr_saveattr"]', attackItem1);
-    copySelect(attackItem2, 'select[name="attr_savedc"]', attackItem1);
-    copyInput(attackItem2, 'input[name="attr_saveeffect"]', attackItem1);
-    copyTextArea(attackItem2, 'textarea[name="attr_atk_desc"]', attackItem1);
-    updateInput(attackItem1, 'input[name="attr_atkname"]', data.name + " (One-Handed)");
-  }
-
-  function copyInput(element, query, originalElement) {
-    var value = originalElement.querySelector(query).value;
-    updateInput(element, query, value);
-  }
-
-  function copySelect(element, query, originalElement) {
-    var value = originalElement.querySelector(query).value;
-    updateSelect(element, query, value);
-  }
-
-  function copyCheckbox(element, query, originalElement) {
-    var value = originalElement.querySelector(query).checked;
-    updateCheckbox(element, query, value);
-  }
-
-  function copyTextArea(element, query, originalElement) {
-    var value = originalElement.querySelector(query).value;
-    updateTextArea(element, query, value);
   }
 
   function updateInput(element, query, value) {

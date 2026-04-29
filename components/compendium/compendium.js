@@ -593,6 +593,8 @@ var Compendium = (function () {
   var Compendium = {
     // initialization
     init: async function init() {
+      if (document.querySelector(".compendium-title").textContent === "")
+        document.querySelector(".compendium-title").textContent = "Roll20";
       settings.origin = document.querySelector(".compendium-title").textContent;
 
       var storedData = await StorageHelper.getItem(StorageHelper.dbNames.campaigns, window.campaign_id, "compendium");

@@ -22,10 +22,4 @@ Compendium: Classes, Species, Items, Monsters
 Compendium: Advanced filter
 Mini Notes: rebuild with nested accordion groups (parent/child)
 Settings: add saved data editor
-Settings: default character sheet settings
 Sheet Settings: Sheet type
-
-Sheet Inventory Overhaul
--Containers
--Highlight magical
--rebuild options UI (modal w/ z-index open)
