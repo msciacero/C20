@@ -305,7 +305,7 @@ var CompendiumImport = (function () {
 
   function updateInput(element, query, value) {
     var input = element.querySelector(query);
-    if (input && value !== null && value !== undefined) {
+    if (input && value !== null && value !== undefined && value !== input.value) {
       input.value = value;
       input.dispatchEvent(new Event("blur"));
     }
@@ -313,7 +313,7 @@ var CompendiumImport = (function () {
 
   function updateCheckbox(element, query, value) {
     var checkbox = element.querySelector(query);
-    if (checkbox) {
+    if (checkbox && checkbox.checked == value) {
       checkbox.checked = !value;
       checkbox.click();
     }
@@ -321,7 +321,7 @@ var CompendiumImport = (function () {
 
   function updateSelect(element, query, value) {
     var select = element.querySelector(query);
-    if (select && value !== null && value !== undefined) {
+    if (select && value !== null && value !== undefined && value !== select.value) {
       select.value = value;
       select.dispatchEvent(new Event("change", { bubbles: true }));
     }
@@ -329,7 +329,7 @@ var CompendiumImport = (function () {
 
   function updateTextArea(element, query, value) {
     var textArea = element.querySelector(query);
-    if (textArea && value !== null && value !== undefined) {
+    if (textArea && value !== null && value !== undefined && value !== textArea.value) {
       textArea.value = value;
       textArea.dispatchEvent(new Event("blur"));
     }

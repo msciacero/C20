@@ -16,10 +16,15 @@ _3rd Party Libraries_
 -Intrinsical's D&D 5e Icon Set by David Kor Kian Wei (https://github.com/intrinsical/tw-dnd/tree/main/icons) - Shield icon for defenses
 -Pluralize (https://github.com/plurals/pluralize) - Custom compendium categories
 -Sortable.js by RubaXa & owenm (https://github.com/SortableJS/Sortable) - Custom journal drag & drop
+-uFuzzy (https://github.com/leeoniya/uFuzzy) - Custom compendium search filter
 
-// TODO List
-Compendium: Classes, Species, Items, Monsters
-Compendium: Advanced filter
+_Wish List_
+Compendium: Classes, Species, Magic Items, Monsters
 Mini Notes: rebuild with nested accordion groups (parent/child)
 Settings: add saved data editor
 Sheet Settings: Sheet type
+
+_Known Issues_
+Versatile Weapons:
+-5e sheet only creates one/two handed attacks on items loaded through API
+-5e sheet does not synch items with multiple attacks

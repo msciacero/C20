@@ -70,8 +70,9 @@ var Attacks = (function () {
 
   function updateItemModifiers(roll20Item, itemMods) {
     var input = roll20Item.querySelector("input[name='attr_itemmodifiers']");
-    if (input) {
-      input.value = itemMods.join(",");
+    itemMods = itemMods.join(",");
+    if (input && input.value !== itemMods) {
+      input.value = itemMods;
       input.dispatchEvent(new Event("blur"));
     }
   }

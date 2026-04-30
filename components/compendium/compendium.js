@@ -178,20 +178,27 @@ var Compendium = (function () {
         return;
       }
 
-      var range = IDBKeyRange.bound(event.target.value.toLowerCase(), event.target.value.toLowerCase() + "\uffff");
-      var results = await StorageHelper.searchObjectByIndex(
-        StorageHelper.dbNames.compendiums,
-        settings.game,
-        "names",
-        range,
-      );
+      var objNames = await StorageHelper.listIndexKeys(StorageHelper.dbNames.compendiums, settings.game, "names");
+      var uf = new uFuzzy({});
+      var searchResults = uf.search(objNames, event.target.value);
 
-      if (results.length === 0) {
+      if (!searchResults || searchResults[0]?.length === 0) {
         pageWrapper.replaceChildren(createNoSearchResults());
         return;
       }
 
+      const promises = searchResults[0].map(async (x) => {
+        return await StorageHelper.getItemFromIndex(
+          StorageHelper.dbNames.compendiums,
+          settings.game,
+          "names",
+          objNames[x],
+        );
+      });
+
+      const results = await Promise.all(promises);
       var container = document.createElement("div");
+      container.id = "c20-compendium-searchContainer";
       var categories = Object.groupBy(results, ({ type }) => type);
       Object.keys(categories)
         .sort()

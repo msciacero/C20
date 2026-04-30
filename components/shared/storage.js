@@ -183,6 +183,11 @@ var StorageHelper = (function () {
     return await db.getAllFromIndex(objectName, indexName, searchValue);
   }
 
+  async function getItemFromIndex(dbName, objectName, indexName, key) {
+    var db = await getDbConnection(dbName);
+    return await db.getFromIndex(objectName, indexName, key);
+  }
+
   async function initCompendium() {
     if (!(await objectStoreExists(dbNames.compendiums, compendiumNames.dnd2014))) {
       await createObjectStoreIfNotExist(dbNames.compendiums, compendiumNames.dnd2014);
@@ -250,6 +255,7 @@ var StorageHelper = (function () {
     addOrUpdateItem: addOrUpdateItem,
     addOrUpdateItems: addOrUpdateItems,
     getItem: getItem,
+    getItemFromIndex: getItemFromIndex,
     listItemsByType: listItemsByType,
     listIndexKeys: listIndexKeys,
     deleteItem: deleteItem,
