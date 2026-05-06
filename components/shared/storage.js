@@ -185,7 +185,7 @@ var StorageHelper = (function () {
 
   async function getItemFromIndex(dbName, objectName, indexName, key) {
     var db = await getDbConnection(dbName);
-    return await db.getFromIndex(objectName, indexName, key);
+    return await db.getAllFromIndex(objectName, indexName, key);
   }
 
   async function initCompendium() {

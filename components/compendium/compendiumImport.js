@@ -55,6 +55,10 @@ var CompendiumImport = (function () {
           importBackground(compendiumData);
           processTrait(compendiumData);
           break;
+        case "class":
+          compendiumData.source = `${compendiumData.level} Level ${compendiumData.groupName}`;
+          processTrait(compendiumData);
+          break;
         case "feat":
           processTrait(compendiumData);
           break;
@@ -63,6 +67,11 @@ var CompendiumImport = (function () {
           break;
         case "spell":
           importSpell(compendiumData);
+          break;
+        case "subclass":
+          compendiumData.source = `${compendiumData.level} Level ${compendiumData.subclassName}`;
+          compendiumData.type = "class";
+          processTrait(compendiumData);
           break;
       }
     }
@@ -313,7 +322,7 @@ var CompendiumImport = (function () {
 
   function updateCheckbox(element, query, value) {
     var checkbox = element.querySelector(query);
-    if (checkbox && checkbox.checked == value) {
+    if (checkbox && checkbox.checked != value) {
       checkbox.checked = !value;
       checkbox.click();
     }

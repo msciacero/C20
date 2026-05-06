@@ -1,5 +1,5 @@
 var Compendium = (function () {
-  var dragList = ["background", "feat", "item", "spell"];
+  var dragList = ["background", "class", "feat", "item", "spell", "subclass"];
   var settings = {
     origin: "",
     game: "",
@@ -197,16 +197,7 @@ var Compendium = (function () {
       });
 
       const results = await Promise.all(promises);
-      var container = document.createElement("div");
-      container.id = "c20-compendium-searchContainer";
-      var categories = Object.groupBy(results, ({ type }) => type);
-      Object.keys(categories)
-        .sort()
-        .forEach((category) => {
-          container.appendChild(createCompendiumPages(category, categories[category]));
-        });
-
-      pageWrapper.replaceChildren(container);
+      pageWrapper.replaceChildren(getPageGroups(results.flatMap((x) => x)));
       document.querySelector("#c20-compendium-search-clear").classList.remove("hidden");
     });
 
@@ -330,7 +321,7 @@ var Compendium = (function () {
       var pageWrapper = document.querySelector("#c20-compendium-pages");
 
       categoryWrapper.style.display = "none;";
-      pageWrapper.replaceChildren(createCompendiumPages(category, items));
+      pageWrapper.replaceChildren(getPageGroups(items, category));
     });
 
     var wrapper = document.createElement("div");
@@ -339,11 +330,37 @@ var Compendium = (function () {
     return wrapper;
   }
 
+  function getPageGroups(items, category = null) {
+    var categories = Object.groupBy(items, (item) => {
+      if (item.type === "class") return `Class - ${item.groupName}`;
+      if (item.type === "subclass") return `Subclass - ${item.className} - ${item.subclassName}`;
+      return item.type;
+    });
+    if (Object.keys(categories).length > 1) {
+      var container = document.createElement("div");
+      container.id = "c20-compendium-searchContainer";
+
+      Object.keys(categories)
+        .sort()
+        .forEach((category) => {
+          container.appendChild(createCompendiumPages(category, categories[category]));
+        });
+
+      return container;
+    }
+
+    if (Object.keys(categories)) category = Object.keys(categories)[0];
+    return createCompendiumPages(category, items);
+  }
+
   //Category Pages
   function createCompendiumPages(category, items) {
     var header = document.createElement("h3");
     header.className = "compendium-pages__header";
-    header.textContent = pluralize.isPlural(category) ? category : pluralize.plural(category);
+    header.textContent =
+      category.startsWith("Class") || category.startsWith("Subclass") || pluralize.isPlural(category)
+        ? category
+        : pluralize.plural(category);
     header.setAttribute("data-v-44ba3207", "");
 
     var container = document.createElement("div");
@@ -356,9 +373,14 @@ var Compendium = (function () {
     itemWrapper.setAttribute("data-v-44ba3207", "");
 
     var items = items
-      .map((x) => ({ id: x.id, name: x.groupName ? x.groupName : x.name, type: x.type, source: x.source }))
+      .map((x) => ({
+        id: x.id,
+        name: getDisplayName(x),
+        type: x.type,
+        source: x.source,
+      }))
       .sort((a, b) => {
-        return a.name.localeCompare(b.name);
+        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" });
       });
 
     items = [...new Map(items.map((v) => [v.name, v])).values()];
@@ -439,7 +461,22 @@ var Compendium = (function () {
     if (data.type === "condition") new ModalHelper(data.groupName ? data.groupName : data.name, displayStandard(data));
     else if (data.type === "item") new ModalHelper(data.name, displayItem(data));
     else if (data.type === "spell") new ModalHelper(data.name, displaySpell(data));
+    else if (data.type === "class") new ModalHelper(data.name, displayClass(data));
     else new ModalHelper(data.name, displayStandard(data));
+  }
+
+  function displayClass(data) {
+    var container = document.createElement("div");
+    if (data.groupName) container.appendChild(createLabelDisplay("Class", data.groupName));
+    if (data.level) container.appendChild(createLabelDisplay("Level", data.level));
+    var description = document.createElement("div");
+    description.style.marginTop = "10px";
+
+    // don't display code blocks
+    description.appendChild(createMarkdownDisplay(data.description.replace(/```(?:\r?\n)?/g, "")));
+    container.appendChild(description);
+
+    return container;
   }
 
   function displayItem(data) {
@@ -569,6 +606,12 @@ var Compendium = (function () {
     group.appendChild(label);
     group.appendChild(value);
     return group;
+  }
+
+  function getDisplayName(item) {
+    if (item.type === "condition" && item.groupName) return item.groupName;
+    if (item.type === "class" || item.type === "subclass") return `${item.level} Level - ${item.name}`;
+    return item.name;
   }
 
   // Character Sheet Integration

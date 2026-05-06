@@ -126,10 +126,6 @@ var Defenses = (function () {
       return;
     }
 
-    storedData = await chrome.storage.local.get([storageKey]);
-    if (storedData[storageKey] === undefined) return;
-
-    defenses = JSON.parse(storedData[storageKey]);
     saveDefenses();
   }
 

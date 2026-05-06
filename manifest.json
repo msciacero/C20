@@ -1,15 +1,16 @@
 {
   "manifest_version": 3,
   "name": "C20",
-  "version": "1.0",
+  "version": "0.0.0.1",
   "description": "Adds additional UI features in Roll20.",
-  "permissions": ["storage", "unlimitedStorage"],
+  "permissions": ["storage"],
   "content_scripts": [
     {
       "matches": ["https://app.roll20.net/editor/"],
       "js": [
         "components/compendium/compendium.js",
         "components/compendium/compendiumEditor.js",
+        "components/compendium/editors/classEditor.js",
         "components/compendium/editors/conditionsEditor.js",
         "components/compendium/editors/traitEditor.js",
         "components/compendium/editors/itemEditor.js",

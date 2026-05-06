@@ -138,10 +138,12 @@ var CompendiumEditor = (function () {
       title: "Category",
       options: [
         { text: "Backgrounds", value: "background" },
+        { text: "Classes", value: "class" },
         { text: "Conditions", value: "condition" },
         { text: "Feats", value: "feat" },
         { text: "Items", value: "item" },
         { text: "Spells", value: "spell" },
+        { text: "Subclasses", value: "subclass" },
       ],
       changeHandler: async function () {
         stdEl.entry.reset();
@@ -220,7 +222,7 @@ var CompendiumEditor = (function () {
       .sort((a, b) => `${a.groupName ?? ""} ${a.name}`.trim().localeCompare(`${b.groupName ?? ""} ${b.name}`.trim()))
       .map((o) => ({
         value: o.id,
-        text: `${o.groupName ?? ""} ${o.name}`.trim(),
+        text: (o.groupName ? `${o.groupName}: ${o.name}` : `${o.name}`).trim(),
       }));
 
     stdEl.entry.disabled(stdEl.category.getValue() === "");
@@ -259,6 +261,13 @@ var CompendiumEditor = (function () {
         name: stdEl.entry.getTextValue().replace("Add ", "").replace("...", ""),
         description: "",
         type: "background",
+        source: "",
+      };
+    else if (stdEl.category.getValue() === "class")
+      entry = {
+        name: stdEl.entry.getTextValue().replace("Add ", "").replace("...", ""),
+        description: "",
+        type: "class",
         source: "",
       };
     else if (stdEl.category.getValue() === "condition")
@@ -313,6 +322,13 @@ var CompendiumEditor = (function () {
         attack: "None",
         savingEffect: "",
       };
+    else if (stdEl.category.getValue() === "subclass")
+      entry = {
+        name: stdEl.entry.getTextValue().replace("Add ", "").replace("...", ""),
+        description: "",
+        type: "subclass",
+        source: "",
+      };
 
     document.querySelector("#editor-action").classList.remove("hidden");
     if (settings.editor === "json") {
@@ -320,6 +336,8 @@ var CompendiumEditor = (function () {
     } else if (settings.editor === "ui") {
       if (stdEl.category.getValue() === "background")
         document.querySelector("#compendium-editor").replaceChildren(createTraitEditor(entry));
+      else if (stdEl.category.getValue() === "class")
+        document.querySelector("#compendium-editor").replaceChildren(createClassEditor(entry));
       else if (stdEl.category.getValue() === "condition")
         document.querySelector("#compendium-editor").replaceChildren(createConditionsEditor(entry));
       else if (stdEl.category.getValue() === "feat")
@@ -328,6 +346,8 @@ var CompendiumEditor = (function () {
         document.querySelector("#compendium-editor").replaceChildren(createItemEditor(entry));
       else if (stdEl.category.getValue() === "spell")
         document.querySelector("#compendium-editor").replaceChildren(createSpellEditor(entry));
+      else if (stdEl.category.getValue() === "subclass")
+        document.querySelector("#compendium-editor").replaceChildren(createSubclassEditor(entry));
     }
   }
 
@@ -461,6 +481,8 @@ var CompendiumEditor = (function () {
 
       if (stdEl.category.getValue() === "item")
         validateResponse.entry = constructItemAbilityData(validateResponse.entry);
+      else if (stdEl.category.getValue() === "subclass")
+        validateResponse.entry.groupName = `${validateResponse.entry.className} - ${validateResponse.entry.subclassName}`;
     }
 
     if (validateResponse.valid === true) {

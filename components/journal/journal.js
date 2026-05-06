@@ -116,7 +116,7 @@ var Journal = (function () {
         if (btn.getAttribute("data-action") === "expand") {
           if (!Object.keys(controller.tempExpand).includes(folder.getAttribute("data-globalfolderid"))) {
             controller.tempExpand[folder.getAttribute("data-globalfolderid")] = Array.from(folder.childNodes).find(
-              (x) => x.tagName === "BUTTON" && x.style.display === "none"
+              (x) => x.tagName === "BUTTON" && x.style.display === "none",
             );
           }
           btn.click();
@@ -410,7 +410,7 @@ var Journal = (function () {
     root.addEventListener("mousedown", function (event) {
       if (isFolder(event.target)) {
         var btn = Array.from(event.target.closest(".dd-folder").childNodes).find(
-          (x) => x.tagName === "BUTTON" && x.style.display === "block"
+          (x) => x.tagName === "BUTTON" && x.style.display === "block",
         );
         btn.click();
       }
@@ -489,11 +489,11 @@ var Journal = (function () {
       l == 8 || l == 13 || l == 18 || l == 23
         ? (e[l] = "-")
         : l == 14
-        ? (e[l] = "4")
-        : (n <= 2 && (n = (33554432 + Math.random() * 16777216) | 0),
-          (o = n & 15),
-          (n = n >> 4),
-          (e[l] = i[l == 19 ? (o & 3) | 8 : o]));
+          ? (e[l] = "4")
+          : (n <= 2 && (n = (33554432 + Math.random() * 16777216) | 0),
+            (o = n & 15),
+            (n = n >> 4),
+            (e[l] = i[l == 19 ? (o & 3) | 8 : o]));
     return e.join("");
   }
 
@@ -538,15 +538,10 @@ var Journal = (function () {
     var savedData = [{ id: null, isCollapsed: false, items: [], name: "root" }];
     if (storedData !== undefined) {
       savedData = storedData;
-    } else {
-      // If still using old storage
-      var key = window.campaign_id + "-journal";
-      storedData = await chrome.storage.local.get([key]);
-      if (storedData[key] !== undefined) savedData = JSON.parse(storedData[key]);
     }
     // check for missing items
     var curItems = Array.from(document.querySelectorAll("#journalfolderroot .journalitem.dd-item")).map((x) =>
-      x.getAttribute("data-itemid")
+      x.getAttribute("data-itemid"),
     );
     var savedItems = savedData.flatMap((x) => x.items.filter((y) => y.type == "item").map((y) => y.id));
     var newItems = curItems.filter((x) => !savedItems.includes(x));
@@ -672,11 +667,11 @@ var Journal = (function () {
   // server side updates
   async function updateState() {
     var clientItems = Array.from(document.querySelectorAll("#c20-journalfolderroot .journalitem.dd-item")).map((x) =>
-      x.getAttribute("data-itemid")
+      x.getAttribute("data-itemid"),
     );
 
     var serverItems = Array.from(document.querySelectorAll("#journalfolderroot .journalitem.dd-item")).map((x) =>
-      x.getAttribute("data-itemid")
+      x.getAttribute("data-itemid"),
     );
 
     // deleted items (assume roll20 does full load)
@@ -695,7 +690,7 @@ var Journal = (function () {
       var existingFolder =
         folder !== null
           ? document.querySelector(
-              `#c20-journalfolderroot [data-globalfolderid="${folder.getAttribute("data-globalfolderid")}"] > ol`
+              `#c20-journalfolderroot [data-globalfolderid="${folder.getAttribute("data-globalfolderid")}"] > ol`,
             )
           : document.querySelector("#c20-journalfolderroot > ol");
 
@@ -713,7 +708,7 @@ var Journal = (function () {
         existingFolder =
           folder !== null
             ? document.querySelector(
-                `#c20-journalfolderroot [data-globalfolderid="${folder.getAttribute("data-globalfolderid")}"] > ol`
+                `#c20-journalfolderroot [data-globalfolderid="${folder.getAttribute("data-globalfolderid")}"] > ol`,
               )
             : document.querySelector("#c20-journalfolderroot > ol");
       }
@@ -783,7 +778,7 @@ var Journal = (function () {
 
         if (settings.isLocked)
           Array.from(document.querySelectorAll("#c20-journalfolderroot .dd-item.character")).forEach((el) =>
-            el.setAttribute("draggable", true)
+            el.setAttribute("draggable", true),
           );
       });
     },
@@ -794,7 +789,7 @@ var Journal = (function () {
 
       Array.from(document.querySelectorAll(`#c20-journalfolderroot .journalitem.dd-item`)).forEach((item) => {
         var placeHolder = document.querySelector(
-          `#journalfolderroot [data-itemid="${item.getAttribute("data-itemid")}"]`
+          `#journalfolderroot [data-itemid="${item.getAttribute("data-itemid")}"]`,
         );
         if (placeHolder) {
           if (item.classList.contains("character")) item.setAttribute("draggable", true);
