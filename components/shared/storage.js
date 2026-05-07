@@ -203,6 +203,10 @@ var StorageHelper = (function () {
   }
 
   async function initCampaign() {
+    if (!(await objectStoreExists(dbNames.campaigns, "all"))) {
+      await createObjectStoreIfNotExist(dbNames.campaigns, "all");
+    }
+
     if (!(await objectStoreExists(dbNames.campaigns, window.campaign_id))) {
       await createObjectStoreIfNotExist(dbNames.campaigns, window.campaign_id);
       var item = document.querySelector("title").textContent.split("|")[0].replaceAll("\n", "").trim();

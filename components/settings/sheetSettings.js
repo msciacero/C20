@@ -91,11 +91,10 @@ var CharacterSettings = (function () {
     row.appendChild(span);
 
     var input = document.createElement("input");
-    input.type = "text";
+    input.type = "color";
     input.name = "settings-item-attunement-color";
     input.placeholder = "CSS Supported Color";
     input.value = settings.itemAttunementColor;
-    input.style.width = "122px";
     row.appendChild(input);
 
     input.addEventListener("input", async function (event) {
@@ -116,7 +115,7 @@ var CharacterSettings = (function () {
     row.appendChild(span);
 
     var input = document.createElement("input");
-    input.type = "text";
+    input.type = "color";
     input.name = "settings-item-magic-color";
     input.placeholder = "CSS Supported Color";
     input.value = settings.itemMagicColor;

@@ -2,11 +2,11 @@
   "manifest_version": 3,
   "name": "C20",
   "version": "0.0.0.1",
-  "description": "Adds additional UI features in Roll20.",
+  "description": "Adds additional UI features to 5e Roll20 games.",
   "permissions": ["storage"],
   "content_scripts": [
     {
-      "matches": ["https://app.roll20.net/editor/"],
+      "matches": ["https://app.roll20.net/editor"],
       "js": [
         "components/compendium/compendium.js",
         "components/compendium/compendiumEditor.js",

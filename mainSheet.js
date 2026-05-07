@@ -14,7 +14,7 @@ function levelEvent() {
   observer.observe(targetNode, config);
 }
 
-async function init() {
+async function init5e() {
   window.campaign_id = window.location.href.split("/")[5];
   window.character_id = window.location.href.split("/")[6];
 
@@ -28,7 +28,7 @@ async function init() {
   if (settings.spellFilter) Spells.initFilter();
   if (settings.spellView) Spells.initUi();
   Traits.init();
-  MiniNotes.init();
+  //MiniNotes.init();
   CompendiumImport.init();
   Inventory.init();
   Attacks.init();
@@ -36,5 +36,9 @@ async function init() {
 }
 
 waitForElement(".sheetform").then(() => {
-  init();
+  if (
+    window.getComputedStyle(document.querySelector(".container.pc .header"))?.backgroundImage ===
+    'url("https://app.roll20.net/images/dndstyling/CharScroll.svg")'
+  )
+    init5e();
 });

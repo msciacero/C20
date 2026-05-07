@@ -45,3 +45,11 @@
 #c20-character-settings .row > :first-child {
   padding-right: 5px;
 }
+
+#c20-character-settings input[type="color"] {
+  width: 50px;
+  height: 17px;
+  padding: 0px;
+  border: solid 1px gray;
+  border-radius: 3px;
+}

@@ -1,4 +1,4 @@
-//need to know what the campaign_id is for state management
+//need to make campaign_id accessible for state management
 var campaignInfo = document.createElement("input");
 campaignInfo.type = "hidden";
 campaignInfo.name = "c20-campaignInfo";

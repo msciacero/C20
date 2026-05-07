@@ -1,9 +1,6 @@
 var Settings = (function () {
   var storageKey = "global-settings";
-
-  var settings = {
-    journal: true,
-  };
+  var settings = {};
 
   // settings ui
   function createInterface() {
@@ -93,16 +90,17 @@ var Settings = (function () {
   }
 
   //save
-  function saveSettings() {
-    chrome.storage.local.set({ [storageKey]: JSON.stringify(settings) });
+  async function saveSettings() {
+    await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.campaigns, "all", settings, "settings");
   }
 
   //load
   async function loadSettings() {
-    var storedData = await chrome.storage.local.get([storageKey]);
-    if (storedData[storageKey] === undefined) return;
-
-    settings = JSON.parse(storedData[storageKey]);
+    settings = await StorageHelper.getItem(StorageHelper.dbNames.campaigns, "all", "settings");
+    if (settings === undefined)
+      settings = {
+        journal: true,
+      };
   }
 
   var Settings = {
