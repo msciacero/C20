@@ -664,39 +664,43 @@ var CompendiumEditor = (function () {
             `c20_compendium_${advEl.game.getValue()}.json`,
           );
         } else if (advEl.operation.getValue() === "import") {
-          var [handle] = await window.showOpenFilePicker({
-            types: [{ accept: { "application/json": [".json"] } }],
-          });
-          const file = await handle.getFile();
-          var jsonData = JSON.parse(await file.text());
+          try {
+            var [handle] = await window.showOpenFilePicker({
+              types: [{ accept: { "application/json": [".json"] } }],
+            });
 
-          // clean & validate
-          jsonData.forEach((item) => {
-            if (item.name === undefined) throw new Error(`Missing 'name' property for ${JSON.stringify(item)}`);
-            if (item.type === undefined) throw new Error(`Missing 'type' property for ${JSON.stringify(item)}`);
-            if (item.id !== undefined) delete item.id;
-            if (item.source == undefined) item["source"] = "Unknown";
-            if (item.type === "condition") if (item.groupName == undefined) item["groupName"] = "";
-            if (item.type === "spell") {
-              item.description = item.description;
-              item.higherLevels = item.higherLevels;
-            }
+            const file = await handle.getFile();
+            var jsonData = JSON.parse(await file.text());
 
-            if (item.names === undefined) {
-              item["names"] = [item.name.toLowerCase()];
+            // clean & validate
+            jsonData.forEach((item) => {
+              if (item.name === undefined) throw new Error(`Missing 'name' property for ${JSON.stringify(item)}`);
+              if (item.type === undefined) throw new Error(`Missing 'type' property for ${JSON.stringify(item)}`);
+              if (item.id !== undefined) delete item.id;
+              if (item.source == undefined) item["source"] = "Unknown";
+              if (item.type === "condition") if (item.groupName == undefined) item["groupName"] = "";
+              if (item.type === "spell") {
+                item.description = item.description;
+                item.higherLevels = item.higherLevels;
+              }
 
-              if (item.groupName !== undefined && item.groupName !== "")
-                item["names"].push(item.groupName.toLowerCase());
-            }
-          });
+              if (item.names === undefined) {
+                item["names"] = [item.name.toLowerCase()];
 
-          await StorageHelper.importObjectStore(
-            StorageHelper.dbNames.compendiums,
-            advEl.game.getValue(),
-            jsonData,
-            settings.update,
-          );
-          await updateGameSelect();
+                if (item.groupName !== undefined && item.groupName !== "")
+                  item["names"].push(item.groupName.toLowerCase());
+              }
+            });
+            await StorageHelper.importObjectStore(
+              StorageHelper.dbNames.compendiums,
+              advEl.game.getValue(),
+              jsonData,
+              settings.update,
+            );
+            await updateGameSelect();
+          } catch (err) {
+            if (err.name !== "AbortError") throw err;
+          }
         } else if (advEl.operation.getValue() === "create") {
           await StorageHelper.createObjectStore(
             StorageHelper.dbNames.compendiums,
@@ -784,7 +788,7 @@ var CompendiumEditor = (function () {
       btn.disabled = false;
 
       if (settings.update) helper.textContent = "*Will update existing records that match on category and name";
-      else helper.textContent = "*Will ignores imported records that already exist";
+      else helper.textContent = "*Will ignore imported records that already exist";
       return;
     }
 

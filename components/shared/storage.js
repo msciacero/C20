@@ -1,8 +1,8 @@
 var StorageHelper = (function () {
   const dbNames = {
-    compendiums: "compendiums",
-    characters: "characters",
-    campaigns: "campaigns",
+    compendiums: "c20-compendiums",
+    characters: "c20-characters",
+    campaigns: "c20-campaigns",
   };
 
   const compendiumNames = {
@@ -10,9 +10,9 @@ var StorageHelper = (function () {
   };
 
   const dbConnections = {
-    compendiums: null,
-    characters: null,
-    campaigns: null,
+    "c20-compendiums": null,
+    "c20-characters": null,
+    "c20-campaigns": null,
   };
 
   async function getDbConnection(dbName) {
@@ -22,7 +22,7 @@ var StorageHelper = (function () {
 
   async function closeDbConnection(dbName) {
     if (dbConnections[dbName] !== null) {
-      await dbConnections[dbName].close();
+      await dbConnections[dbName]?.close();
       dbConnections[dbName] = null;
     }
   }
@@ -36,14 +36,14 @@ var StorageHelper = (function () {
 
   async function objectStoreExists(dbName, objName) {
     var db = await getDbConnection(dbName);
-    return db.objectStoreNames.contains(objName);
+    return db?.objectStoreNames?.contains(objName);
   }
 
   async function createObjectStoreIfNotExist(dbName, objName) {
     var db = await getDbConnection(dbName);
-    if (db.objectStoreNames.contains(objName)) return;
+    if (db?.objectStoreNames?.contains(objName)) return;
 
-    var version = db.version;
+    var version = db?.version ?? 0;
     await closeDbConnection(dbName);
 
     db = await idb.openDB(dbName, version + 1, {
@@ -72,14 +72,59 @@ var StorageHelper = (function () {
     }
 
     const jsonData = JSON.stringify(data);
-    const handle = await window.showSaveFilePicker({
-      startIn: "downloads",
-      suggestedName: fileName,
-      types: [{ accept: { "application/json": [".json"] } }],
-    });
-    const writableStream = await handle.createWritable();
-    await writableStream.write(jsonData);
-    await writableStream.close();
+
+    try {
+      const handle = await window.showSaveFilePicker({
+        startIn: "downloads",
+        suggestedName: fileName,
+        types: [{ accept: { "application/json": [".json"] } }],
+      });
+      const writableStream = await handle.createWritable();
+      await writableStream.write(jsonData);
+      await writableStream.close();
+    } catch (err) {
+      if (err.name !== "AbortError") throw err;
+    }
+  }
+
+  async function exportAll() {
+    var exportData = {};
+
+    for (var key in dbNames) {
+      var db = await getDbConnection(dbNames[key]);
+      const databaseData = {};
+
+      for (const storeName of db.objectStoreNames) {
+        const data = [];
+        var cursor = await db.transaction(storeName).store.openCursor();
+        while (cursor) {
+          data.push({
+            key: cursor.key,
+            value: cursor.value,
+          });
+          cursor = await cursor.continue();
+        }
+
+        databaseData[storeName] = data;
+      }
+
+      exportData[key] = databaseData;
+    }
+
+    const jsonData = JSON.stringify(exportData);
+
+    try {
+      const handle = await window.showSaveFilePicker({
+        startIn: "downloads",
+        suggestedName: "c20_export.json",
+        types: [{ accept: { "application/json": [".json"] } }],
+      });
+      const writableStream = await handle.createWritable();
+      await writableStream.write(jsonData);
+      await writableStream.close();
+    } catch (err) {
+      if (err.name !== "AbortError") throw err;
+    }
   }
 
   async function importObjectStore(dbName, objName, data, overwrite) {
@@ -116,6 +161,35 @@ var StorageHelper = (function () {
       }),
       tx.done,
     ]);
+  }
+
+  async function importAll(data) {
+    for (const dbName in data) {
+      for (const objName in data[dbName]) {
+        if (!(await objectStoreExists(dbName, objName))) {
+          await createObjectStoreIfNotExist(dbName, objName);
+        }
+
+        var db = await getDbConnection(dbName);
+        var tx = db.transaction(objName, "readwrite");
+
+        if (dbName === dbNames.compendiums) {
+          await Promise.all([
+            data[dbName][objName].forEach((item) => {
+              tx.store.put(item.value);
+            }),
+            tx.done,
+          ]);
+        } else {
+          await Promise.all([
+            data[dbName][objName].forEach((item) => {
+              tx.store.put(item.value, item.key);
+            }),
+            tx.done,
+          ]);
+        }
+      }
+    }
   }
 
   async function deleteObjectStore(dbName, objName) {
@@ -256,6 +330,8 @@ var StorageHelper = (function () {
     importObjectStore: importObjectStore,
     exportObjectStore: exportObjectStore,
     deleteObjectStore: deleteObjectStore,
+    importAll: importAll,
+    exportAll: exportAll,
     addOrUpdateItem: addOrUpdateItem,
     addOrUpdateItems: addOrUpdateItems,
     getItem: getItem,

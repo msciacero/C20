@@ -18,8 +18,8 @@ var CompendiumImport = (function () {
     dropZone.appendChild(dropNoticeBg);
 
     characterSheet.addEventListener("dragenter", async function (event) {
-      var localStorage = await chrome.storage.local.get("compendiumImport");
-      if (localStorage.compendiumImport === true) {
+      var compendiumImport = await StorageHelper.getItem(StorageHelper.dbNames.campaigns, "all", "compendiumImport");
+      if (compendiumImport === true) {
         event.preventDefault();
         dropZone.style.display = "flex";
       }

@@ -730,7 +730,7 @@ var Journal = (function () {
   }
 
   function serverChangeHandler() {
-    observer = new MutationObserver(async (mutationsList, _) => {
+    nodes.observer = new MutationObserver(async (mutationsList, _) => {
       for (const mutation of mutationsList) {
         if (mutation.type === "childList" && mutation.target.className !== "folder-title") {
           //Item or Folder added/remove
@@ -752,7 +752,7 @@ var Journal = (function () {
       subtree: true, // Observe changes in descendants of the target node
     };
 
-    observer.observe(targetNode, config);
+    nodes.observer.observe(targetNode, config);
   }
 
   var Journal = {
@@ -783,7 +783,9 @@ var Journal = (function () {
       });
     },
     remove: async function remove() {
-      observer.disconnect();
+      if (document.querySelector("#journal > .content > .superadd.btn") !== null) return;
+
+      nodes.observer.disconnect();
       nodes.journalSorts.forEach((s) => s.destroy());
       nodes.journalSorts = [];
 

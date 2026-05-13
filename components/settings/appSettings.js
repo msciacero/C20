@@ -10,7 +10,8 @@ var Settings = (function () {
 
     panelBody.appendChild(journalCheckBox);
     panelBody.appendChild(getSettingsModalLink({ value: "Edit Compendium", event: CompendiumEditor.show }));
-    //panelBody.appendChild(getSettingsModalLink({ value: "Saved Data", event: SavedData.show }));
+    panelBody.appendChild(getSettingsModalLink({ value: "Import/Export", event: DataEditor.show }));
+
     document.querySelector("#settings-accordion").appendChild(panel);
 
     journalCheckBox.querySelector("input").addEventListener("click", function (event) {
@@ -88,7 +89,6 @@ var Settings = (function () {
     div.appendChild(btn);
     return div;
   }
-
   //save
   async function saveSettings() {
     await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.campaigns, "all", settings, "settings");

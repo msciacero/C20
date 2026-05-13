@@ -182,7 +182,7 @@ var Conditions = (function () {
       var description = document.createElement("div");
       description.appendChild(createMarkdownDisplay(compendiumCondition.description));
       container.appendChild(description);
-      new ModalHelper(title, container);
+      new CardModal(title, container);
     });
 
     return conditionLabel;

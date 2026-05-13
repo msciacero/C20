@@ -7,6 +7,7 @@ C20 is a browser extension for Roll20. It adds a number of features that allows 
 - Additional journal actions for players (hide, filter, sort, and folder management)
 - Custom Compendium
   - Ability to create new compendiums for custom content
+  - Drag and drop ability that mimics manually updating character sheet
   - Does not work with Charactermancer
 
 ## DnD 2014 Character Sheet Features
@@ -25,18 +26,17 @@ C20 is a browser extension for Roll20. It adds a number of features that allows 
 - FontAwesome Icons (https://fontawesome.com/) - Filter icon on spell tab
 - idb (https://github.com/jakearchibald/idb) - async indexeddb helper
 - Intrinsical's D&D 5e Icon Set by David Kor Kian Wei (https://github.com/intrinsical/tw-dnd/tree/main/icons) - Shield icon for defenses
-- Pluralize (https://github.com/plurals/pluralize) - Custom compendium categories
 - Sortable.js by RubaXa & owenm (https://github.com/SortableJS/Sortable) - Custom journal drag & drop
 - uFuzzy (https://github.com/leeoniya/uFuzzy) - Custom compendium search filter
 
-## Chrome Permissions
-
-- Storage: Temporary data cache to allow custom compendium drag and drop between tabs
-
 ## Wish List
 
-- Compendium: Species, Monsters, Features, Groupings (Type/Name|GroupName)
+- Compendium: Species, Monsters, Features, Groupings (Type/Name|GroupName), category search filter
 - Mini Notes: rebuild with nested accordion groups (parent/child)
+- Saved game editor (delete campaign/characters)
+- default character sheet settings
+- Move styles to css
+- Language support
 
 ## Known Issues
 

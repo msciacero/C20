@@ -5,6 +5,15 @@ var Compendium = (function () {
     game: "",
     isDragging: false,
   };
+  var pluralName = {
+    background: "backgrounds",
+    class: "classes",
+    condition: "conditions",
+    feat: "feats",
+    item: "items",
+    spell: "spells",
+    subclass: "subclasses",
+  };
 
   async function createUi() {
     var connector = document.querySelector("#vm_compendium_panel");
@@ -82,6 +91,8 @@ var Compendium = (function () {
     ) {
       compendiums[1].classList.add("hidden");
       compendiums[0].classList.remove("hidden");
+      if (document.querySelector(".compendium-title").textContent === "")
+        document.querySelector(".compendium-title").textContent = "Roll20";
     } else {
       await createCompendium();
       compendiums[0].classList.add("hidden");
@@ -114,17 +125,18 @@ var Compendium = (function () {
     var breadCrumb = document.createElement("div");
     breadCrumb.className = "compendium-breadcrumb";
     breadCrumb.setAttribute("data-v-7d9e6752", "");
+    title.setAttribute("data-v-231d5d04", "");
     breadCrumb.appendChild(title);
     breadCrumb.appendChild(createCompendiumTitleCrumb());
 
     var breadCrumbs = document.createElement("div");
     breadCrumbs.className = "compendium-breadcrumbs";
-    breadCrumbs.setAttribute("data-v-f0ba7f9a", "");
+    breadCrumbs.setAttribute("data-v-231d5d04", "");
     breadCrumbs.appendChild(breadCrumb);
 
     var bigCrumb = document.createElement("div");
     bigCrumb.className = "compendium__breadcrumbs";
-    bigCrumb.setAttribute("data-v-f0ba7f9a", "");
+    bigCrumb.setAttribute("data-v-231d5d04", "");
     bigCrumb.appendChild(breadCrumbs);
 
     return bigCrumb;
@@ -150,6 +162,8 @@ var Compendium = (function () {
     button.className = "el-button is-link compendium-breadcrumb__back";
     button.addEventListener("click", function () {
       document.querySelector("#c20-compendium-pages").replaceChildren();
+
+      document.querySelector("#c20-compendium-search-clear").click();
     });
     button.appendChild(wrapper);
     button.setAttribute("data-v-7d9e6752", "");
@@ -301,7 +315,7 @@ var Compendium = (function () {
   function createCategory(category) {
     var span = document.createElement("span");
     span.className = "compendium-category__name";
-    span.textContent = pluralize.isPlural(category) ? category : pluralize.plural(category);
+    span.textContent = pluralName[category];
     span.setAttribute("data-v-cc29675b", "");
 
     var flourish = document.createElement("div");
@@ -358,9 +372,7 @@ var Compendium = (function () {
     var header = document.createElement("h3");
     header.className = "compendium-pages__header";
     header.textContent =
-      category.startsWith("Class") || category.startsWith("Subclass") || pluralize.isPlural(category)
-        ? category
-        : pluralize.plural(category);
+      category.startsWith("Class") || category.startsWith("Subclass") ? category : pluralName[category];
     header.setAttribute("data-v-44ba3207", "");
 
     var container = document.createElement("div");
@@ -458,11 +470,11 @@ var Compendium = (function () {
   async function createDisplayModal(id) {
     var data = await StorageHelper.getItem(StorageHelper.dbNames.compendiums, settings.game, id);
 
-    if (data.type === "condition") new ModalHelper(data.groupName ? data.groupName : data.name, displayStandard(data));
-    else if (data.type === "item") new ModalHelper(data.name, displayItem(data));
-    else if (data.type === "spell") new ModalHelper(data.name, displaySpell(data));
-    else if (data.type === "class") new ModalHelper(data.name, displayClass(data));
-    else new ModalHelper(data.name, displayStandard(data));
+    if (data.type === "condition") new CardModal(data.groupName ? data.groupName : data.name, displayStandard(data));
+    else if (data.type === "item") new CardModal(data.name, displayItem(data));
+    else if (data.type === "spell") new CardModal(data.name, displaySpell(data));
+    else if (data.type === "class") new CardModal(data.name, displayClass(data));
+    else new CardModal(data.name, displayStandard(data));
   }
 
   function displayClass(data) {
@@ -615,10 +627,10 @@ var Compendium = (function () {
   }
 
   // Character Sheet Integration
-  function createDragAndDrop() {
-    chrome.storage.local.set({ compendiumImport: false });
+  async function createDragAndDrop() {
+    await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.campaigns, "all", false, "compendiumImport");
     var compendium = document.querySelector("#c20-compendium");
-    compendium.addEventListener("dragstart", function (event) {
+    compendium.addEventListener("dragstart", async function (event) {
       if (event.target.classList.contains("ui-draggable")) {
         var itemId = event.target.getAttribute("data-c20-Id");
         var dragData = {
@@ -628,14 +640,14 @@ var Compendium = (function () {
         };
         event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
         settings.isDragging = true;
-        chrome.storage.local.set({ compendiumImport: true });
+        await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.campaigns, "all", true, "compendiumImport");
       }
     });
 
     compendium.addEventListener("dragstop", async function (event) {
       if (settings.isDragging === true) {
         settings.isDragging = false;
-        await chrome.storage.local.set({ compendiumImport: false });
+        await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.campaigns, "all", false, "compendiumImport");
       }
     });
   }

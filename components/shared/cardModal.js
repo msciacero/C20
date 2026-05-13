@@ -1,4 +1,4 @@
-class ModalHelper {
+class CardModal {
   constructor(title, body, closeCallback = null, options = {}) {
     this.modal = null;
     this.settings = {

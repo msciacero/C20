@@ -10,7 +10,7 @@ var Inventory = (function () {
       wrapper.setAttribute("data-itemid", itemId);
       wrapper.appendChild(createItemEditor(itemData));
 
-      new ModalHelper("Inventory Item", wrapper, updateItemData, { width: "540px" });
+      new CardModal("Inventory Item", wrapper, updateItemData, { width: "540px" });
     }
   }
 

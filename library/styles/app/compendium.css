@@ -26,6 +26,57 @@
   height: 100%;
 }
 
-em {
+#c20-compendium em {
   font-family: "proxima-nova";
+}
+
+#c20-compendium .c20-compendium-dropdown::after {
+  content: "";
+  display: inline-block;
+  margin-left: -8px;
+  vertical-align: middle;
+  /* Creates a downward triangle */
+  border-top: 5px solid currentColor;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.c20-compendium-menu {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  z-index: 1;
+}
+
+.c20-compendium-menu select {
+  width: 160px;
+  cursor: pointer;
+  font-size: 20px;
+  margin-top: -7px;
+  height: auto;
+  font-weight: 900;
+  font-family: "Nunito";
+  border: none;
+  border-bottom: solid 1px;
+  border-radius: 0;
+}
+
+#c20-compendium .compendium-breadcrumb button,
+#c20-compendium:has(.compendium-pages__container) .compendium-breadcrumb > .compendium-title,
+#vm_compendium_panel:has(.compendium-pages__container) .c20-compendium-menu,
+#c20-compendium:has(#c20-compendium-pages div) #c20-compendium-categories {
+  display: none;
+}
+
+#c20-compendium:has(.compendium-pages__container) .compendium-breadcrumb .compendium-breadcrumb__back {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  padding: 0;
+  margin: 0;
+}
+
+#c20-compendium-modal-content input:disabled {
+  cursor: not-allowed;
 }
