@@ -33,8 +33,6 @@ C20 is a browser extension for Roll20. It adds a number of features that allows 
 
 - Compendium: Species, Monsters, Features, Groupings (Type/Name|GroupName), category search filter
 - Mini Notes: rebuild with nested accordion groups (parent/child)
-- Saved game editor (delete campaign/characters)
-- default character sheet settings
 - Move styles to css
 - Language support
 

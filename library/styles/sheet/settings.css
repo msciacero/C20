@@ -53,3 +53,16 @@
   border: solid 1px gray;
   border-radius: 3px;
 }
+
+#c20-character-settings button {
+  background: none;
+  border: none;
+  font-size: 9px;
+  font-weight: 700;
+  color: black;
+  padding: 0;
+}
+
+#c20-character-settings button:hover {
+  color: #e7339d;
+}

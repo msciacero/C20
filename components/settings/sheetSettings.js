@@ -11,6 +11,7 @@ var CharacterSettings = (function () {
     container.appendChild(await createConditionsRow());
     container.appendChild(createInventoryColorAttunementRow());
     container.appendChild(createInventoryColorMagicRow());
+    container.appendChild(createDefaultRow());
     container.appendChild(createTitleRow());
 
     document.querySelector(".page.options .general_options").after(container);
@@ -87,7 +88,7 @@ var CharacterSettings = (function () {
     row.className = "row";
 
     var span = document.createElement("span");
-    span.textContent = "Attunement Item Color:";
+    span.textContent = "ATTUNEMENT ITEM COLOR:";
     row.appendChild(span);
 
     var input = document.createElement("input");
@@ -111,7 +112,7 @@ var CharacterSettings = (function () {
     row.className = "row";
 
     var span = document.createElement("span");
-    span.textContent = "Magic Item Color:";
+    span.textContent = "MAGIC ITEM COLOR:";
     row.appendChild(span);
 
     var input = document.createElement("input");
@@ -180,6 +181,21 @@ var CharacterSettings = (function () {
     return row;
   }
 
+  function createDefaultRow() {
+    var row = document.createElement("div");
+    row.className = "row";
+
+    var button = document.createElement("button");
+    button.textContent = "SET AS DEFAULT";
+    button.addEventListener("click", async function () {
+      await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.characters, "all", settings, "settings");
+    });
+
+    row.appendChild(button);
+
+    return row;
+  }
+
   function createTitleRow() {
     var titleRow = document.createElement("div");
     titleRow.className = "row title";
@@ -192,14 +208,17 @@ var CharacterSettings = (function () {
   }
 
   async function saveSettings() {
-    await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.characters, "all", settings, "settings");
+    await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.characters, window.character_id, settings, "settings");
   }
 
   async function loadSettings() {
-    settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+    settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
     var games = await StorageHelper.listObjectStores(StorageHelper.dbNames.compendiums);
 
-    if (settings === undefined) settings = {};
+    if (settings === undefined) {
+      settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+      if (settings === undefined) settings = {};
+    }
     if (settings.conditionCompendium === undefined || !games.includes(settings.conditionCompendium))
       settings.conditionCompendium = "off";
     if (settings.defenses === undefined) settings.defenses = true;

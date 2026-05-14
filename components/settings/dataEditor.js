@@ -220,10 +220,10 @@ var DataEditor = (function () {
     var campaignCharacters = await StorageHelper.getItem(StorageHelper.dbNames.campaigns, campaignId, "characters");
 
     for (var characterId in campaignCharacters) {
-      await StorageHelper.deleteObjectStore(StorageHelper.dbNames.characters, characterId);
+      await StorageHelper.deleteObjectStore(StorageHelper.dbNames.characters, campaignCharacters[characterId]);
     }
 
-    await StorageHelper.deleteObjectStore(StorageHelper.dbNames.campaigns, campaignIdId);
+    await StorageHelper.deleteObjectStore(StorageHelper.dbNames.campaigns, campaignId);
   }
 
   async function deleteCharacter(campaignId, characterId) {

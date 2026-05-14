@@ -17,3 +17,8 @@
 .panel-heading .accordion-toggle.collapsed[data-v-c20settings]:after {
   content: "\f078";
 }
+
+#c20-settings button:hover {
+  color: #e7339d;
+  text-decoration: underline;
+}

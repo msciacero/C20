@@ -301,7 +301,11 @@ var Conditions = (function () {
   }
 
   async function getConditionCompendium() {
-    var characterSettings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+    var characterSettings = await StorageHelper.getItem(
+      StorageHelper.dbNames.characters,
+      window.character_id,
+      "settings",
+    );
     return characterSettings.conditionCompendium;
   }
 

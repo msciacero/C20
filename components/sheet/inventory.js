@@ -169,7 +169,7 @@ var Inventory = (function () {
   }
 
   async function updateItemDisplay(item) {
-    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
     updateAccent(item.querySelector('input[name="attr_itemproperties"]'), settings);
     updateDivider(item.querySelector('input[name="attr_itemmodifiers"]'));
   }
@@ -192,7 +192,7 @@ var Inventory = (function () {
 
   async function updateAccents() {
     var items = Array.from(document.querySelectorAll('.equipment .repitem .item input[name="attr_itemproperties"]'));
-    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
     items.forEach((item) => updateAccent(item, settings));
   }
 

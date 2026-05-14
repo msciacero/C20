@@ -1,6 +1,6 @@
 function levelEvent() {
   var observer = new MutationObserver(async (mutationsList, _) => {
-    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
     if (settings.spellView) {
       document.querySelectorAll(".spell-container .repcontainer .spell").forEach((s) => Spells.updateSpellRow(s));
     }
@@ -21,7 +21,7 @@ async function init5e() {
   await StorageHelper.initCharacter();
   await CharacterSettings.init();
 
-  var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+  var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
 
   if (settings.defenses) Defenses.init();
   if (settings.conditionCompendium !== "off") Conditions.init();

@@ -166,9 +166,8 @@ var StorageHelper = (function () {
   async function importAll(data) {
     for (const dbName in data) {
       for (const objName in data[dbName]) {
-        if (!(await objectStoreExists(dbName, objName))) {
-          await createObjectStoreIfNotExist(dbName, objName);
-        }
+        deleteObjectStore(data[dbName], objName);
+        await createObjectStoreIfNotExist(dbName, objName);
 
         var db = await getDbConnection(dbName);
         var tx = db.transaction(objName, "readwrite");
@@ -235,7 +234,7 @@ var StorageHelper = (function () {
 
   async function listIndexKeys(dbName, objName, indexName) {
     var db = await getDbConnection(dbName);
-    var cursor = await db.transaction(objName).store.index(indexName).openCursor(null, "nextunique");
+    var cursor = await db.transaction(objName).store.index(indexName)?.openCursor(null, "nextunique");
 
     var list = [];
 
