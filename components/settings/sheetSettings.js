@@ -5,19 +5,113 @@ var CharacterSettings = (function () {
     var container = document.createElement("div");
     container.id = "c20-character-settings";
 
-    container.appendChild(createDefensesRow());
-    container.appendChild(createSpellFilterRow());
-    container.appendChild(createSpellViewRow());
-    container.appendChild(await createConditionsRow());
-    container.appendChild(createInventoryColorAttunementRow());
-    container.appendChild(createInventoryColorMagicRow());
-    container.appendChild(createDefaultRow());
+    container.appendChild(createCheckboxRow({ name: "defenses", title: "show defenses", event: defenseEvent }));
+    container.appendChild(
+      createCheckboxRow({ name: "itemView", title: "show enhanced inventory", event: inventoryEvent }),
+    );
+    container.appendChild(createCheckboxRow({ name: "traitsView", title: "show styled traits", event: traitsEvent }));
+    container.appendChild(
+      createCheckboxRow({ name: "spellFilter", title: "show spell filter", event: spellFilterEvent }),
+    );
+    container.appendChild(createCheckboxRow({ name: "spellView", title: "show spell view", event: spellFilterEvent }));
+    container.appendChild(
+      createSelectRow({
+        name: "conditionCompendium",
+        title: "conditions",
+        options: await getConditionOptions(),
+        event: conditionsEvent,
+      }),
+    );
+    container.appendChild(
+      createColorRow({ name: "itemAttunementColor", title: "attunement item color", event: itemAttunementColorEvent }),
+    );
+    container.appendChild(
+      createColorRow({ name: "itemMagicColor", title: "magic item color", event: itemMagicColorEvent }),
+    );
+    container.appendChild(createButtonRow({ title: "set as default", event: defaultEvent }));
+    container.appendChild(createButtonRow({ title: "reset to default", event: resetEvent }));
     container.appendChild(createTitleRow());
 
     document.querySelector(".page.options .general_options").after(container);
   }
 
-  async function createConditionsRow() {
+  function createButtonRow(data) {
+    var row = document.createElement("div");
+    row.className = "row";
+
+    var button = document.createElement("button");
+    button.textContent = data.title.toUpperCase();
+    button.addEventListener("click", data.event);
+
+    row.appendChild(button);
+
+    return row;
+  }
+
+  function createCheckboxRow(data) {
+    var row = document.createElement("div");
+    row.className = "row";
+
+    var input = document.createElement("input");
+    input.type = "checkbox";
+    input.name = `settings-${data.name}`;
+    input.checked = settings[data.name];
+    row.appendChild(input);
+
+    var span = document.createElement("span");
+    span.textContent = data.title.toUpperCase();
+    row.appendChild(span);
+
+    input.addEventListener("change", data.event);
+
+    return row;
+  }
+
+  function createColorRow(data) {
+    var row = document.createElement("div");
+    row.className = "row";
+
+    var span = document.createElement("span");
+    span.textContent = `${data.title.toUpperCase()}:`;
+    row.appendChild(span);
+
+    var input = document.createElement("input");
+    input.type = "color";
+    input.name = `settings-${data.name}`;
+    input.value = settings[data.name];
+    row.appendChild(input);
+
+    input.addEventListener("input", data.event);
+
+    return row;
+  }
+
+  function createSelectRow(data) {
+    var row = document.createElement("div");
+    row.className = "row";
+
+    var span = document.createElement("span");
+    span.textContent = `${data.title.toUpperCase()}:`;
+    row.appendChild(span);
+
+    var select = document.createElement("select");
+    select.name = `settings-${data.name}`;
+    select.value = settings[data.name];
+
+    data.options.forEach((g) => {
+      var option = document.createElement("option");
+      option.value = g.value;
+      option.textContent = g.name;
+      select.appendChild(option);
+    });
+
+    select.addEventListener("change", data.event);
+
+    row.appendChild(select);
+    return row;
+  }
+
+  async function getConditionOptions() {
     var games = await StorageHelper.listObjectStores(StorageHelper.dbNames.compendiums);
     games.sort((a, b) => {
       return a.localeCompare(b);
@@ -28,172 +122,118 @@ var CharacterSettings = (function () {
     var conditionOptions = games.map((g) => ({ name: g, value: g }));
     conditionOptions.push({ name: "Off", value: "off" });
 
-    var row = document.createElement("div");
-    row.className = "row";
-
-    var span = document.createElement("span");
-    span.textContent = "CONDITIONS:";
-    row.appendChild(span);
-
-    var select = document.createElement("select");
-    select.name = "settings-conditions";
-    select.value = settings.conditionCompendium;
-
-    conditionOptions.forEach((g) => {
-      var option = document.createElement("option");
-      option.value = g.value;
-      option.textContent = g.name;
-      select.appendChild(option);
-    });
-
-    select.addEventListener("change", async function (event) {
-      settings.conditionCompendium = event.target.value;
-      await saveSettings();
-
-      if (settings.conditionCompendium === "off") Conditions.remove();
-      else Conditions.init();
-    });
-
-    row.appendChild(select);
-    return row;
+    return conditionOptions;
   }
 
-  function createDefensesRow() {
-    var row = document.createElement("div");
-    row.className = "row";
+  async function conditionsEvent(event) {
+    settings.conditionCompendium = event.target.value;
+    await saveSettings();
 
-    var input = document.createElement("input");
-    input.type = "checkbox";
-    input.name = "settings-defenses";
-    input.checked = settings.defenses;
-    row.appendChild(input);
+    if (settings.conditionCompendium === "off") Conditions.remove();
+    else Conditions.init();
+  }
 
-    var span = document.createElement("span");
-    span.textContent = "SHOW DEFENSES";
-    row.appendChild(span);
+  async function defaultEvent() {
+    await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.characters, "all", settings, "settings");
+  }
 
-    input.addEventListener("change", async function (event) {
-      settings.defenses = event.target.checked;
-      await saveSettings();
+  async function defenseEvent(event) {
+    settings.defenses = event.target.checked;
+    await saveSettings();
 
-      if (settings.defenses) Defenses.init();
+    if (settings.defenses) Defenses.init();
+    else Defenses.remove();
+  }
+
+  async function itemAttunementColorEvent(event) {
+    settings.itemAttunementColor = event.target.value;
+    await saveSettings();
+    await Inventory.updateUi();
+  }
+
+  async function itemMagicColorEvent(event) {
+    settings.itemMagicColor = event.target.value;
+    await saveSettings();
+    await Inventory.updateUi();
+  }
+
+  async function inventoryEvent(event) {
+    settings.itemView = event.target.checked;
+    await saveSettings();
+
+    if (settings.itemView) Inventory.init();
+    else Inventory.remove();
+  }
+
+  async function resetEvent() {
+    var df = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
+    df = await checkSettingValues(df);
+    await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.characters, window.character_id, df, "settings");
+
+    if (settings.defenses !== df.defenses) {
+      if (df.defenses) Defenses.init();
       else Defenses.remove();
-    });
+    }
 
-    return row;
-  }
-
-  function createInventoryColorAttunementRow() {
-    var row = document.createElement("div");
-    row.className = "row";
-
-    var span = document.createElement("span");
-    span.textContent = "ATTUNEMENT ITEM COLOR:";
-    row.appendChild(span);
-
-    var input = document.createElement("input");
-    input.type = "color";
-    input.name = "settings-item-attunement-color";
-    input.placeholder = "CSS Supported Color";
-    input.value = settings.itemAttunementColor;
-    row.appendChild(input);
-
-    input.addEventListener("input", async function (event) {
-      settings.itemAttunementColor = event.target.value;
-      await saveSettings();
-      await Inventory.updateUi();
-    });
-
-    return row;
-  }
-
-  function createInventoryColorMagicRow() {
-    var row = document.createElement("div");
-    row.className = "row";
-
-    var span = document.createElement("span");
-    span.textContent = "MAGIC ITEM COLOR:";
-    row.appendChild(span);
-
-    var input = document.createElement("input");
-    input.type = "color";
-    input.name = "settings-item-magic-color";
-    input.placeholder = "CSS Supported Color";
-    input.value = settings.itemMagicColor;
-    row.appendChild(input);
-
-    input.addEventListener("input", async function (event) {
-      settings.itemMagicColor = event.target.value;
-      await saveSettings();
-      await Inventory.updateUi();
-    });
-
-    return row;
-  }
-
-  function createSpellFilterRow() {
-    var row = document.createElement("div");
-    row.className = "row";
-
-    var input = document.createElement("input");
-    input.type = "checkbox";
-    input.name = "settings-spellFilter";
-    input.checked = settings.spellFilter;
-    row.appendChild(input);
-
-    var span = document.createElement("span");
-    span.textContent = "SHOW SPELL FILTER";
-    row.appendChild(span);
-
-    input.addEventListener("change", async function (event) {
-      settings.spellFilter = event.target.checked;
-      await saveSettings();
-
-      if (settings.spellFilter) Spells.initFilter();
+    if (settings.spellFilter !== df.spellFilter) {
+      if (df.spellFilter) Spells.initFilter();
       else Spells.removeFilter();
-    });
+    }
 
-    return row;
-  }
-
-  function createSpellViewRow() {
-    var row = document.createElement("div");
-    row.className = "row";
-
-    var input = document.createElement("input");
-    input.type = "checkbox";
-    input.name = "settings-spellView";
-    input.checked = settings.spellView;
-    row.appendChild(input);
-
-    var span = document.createElement("span");
-    span.textContent = "SHOW C20 SPELL VIEW";
-    row.appendChild(span);
-
-    input.addEventListener("change", async function (event) {
-      settings.spellView = event.target.checked;
-      await saveSettings();
-
-      if (settings.spellView) Spells.initUi();
+    if (settings.spellView !== df.spellView) {
+      if (df.spellView) Spells.initUi();
       else Spells.removeUi();
-    });
+    }
 
-    return row;
+    if (settings.itemAttunementColor !== df.itemAttunementColor) {
+      await Inventory.updateUi();
+    }
+
+    if (settings.itemMagicColor !== df.itemMagicColor) {
+      await Inventory.updateUi();
+    }
+
+    if (settings.traitsView !== df.traitsView) {
+      if (df.traitsView) Traits.init();
+      else Traits.remove();
+    }
+
+    if (settings.itemView !== df.itemView) {
+      if (df.itemView) Inventory.init();
+      else Inventory.remove();
+    }
+
+    document.querySelector("#c20-character-settings").remove();
+    CharacterSettings.init();
+
+    if (settings.conditionCompendium === df.conditionCompendium) {
+      if (df.conditionCompendium === "off") Conditions.remove();
+      else Conditions.init();
+    }
   }
 
-  function createDefaultRow() {
-    var row = document.createElement("div");
-    row.className = "row";
+  async function spellFilterEvent(event) {
+    settings.spellFilter = event.target.checked;
+    await saveSettings();
 
-    var button = document.createElement("button");
-    button.textContent = "SET AS DEFAULT";
-    button.addEventListener("click", async function () {
-      await StorageHelper.addOrUpdateItem(StorageHelper.dbNames.characters, "all", settings, "settings");
-    });
+    if (settings.spellFilter) Spells.initFilter();
+    else Spells.removeFilter();
+  }
 
-    row.appendChild(button);
+  async function spellViewEvent(event) {
+    settings.spellView = event.target.checked;
+    await saveSettings();
 
-    return row;
+    if (settings.spellView) Spells.initUi();
+    else Spells.removeUi();
+  }
+
+  async function traitsEvent(event) {
+    settings.traitsView = event.target.checked;
+    await saveSettings();
+
+    if (settings.traitsView) Traits.init();
+    else Traits.remove();
   }
 
   function createTitleRow() {
@@ -213,20 +253,29 @@ var CharacterSettings = (function () {
 
   async function loadSettings() {
     settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
-    var games = await StorageHelper.listObjectStores(StorageHelper.dbNames.compendiums);
 
     if (settings === undefined) {
       settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, "all", "settings");
       if (settings === undefined) settings = {};
     }
-    if (settings.conditionCompendium === undefined || !games.includes(settings.conditionCompendium))
-      settings.conditionCompendium = "off";
-    if (settings.defenses === undefined) settings.defenses = true;
-    if (settings.spellFilter === undefined) settings.spellFilter = true;
-    if (settings.spellView === undefined) settings.spellView = true;
-    if (settings.itemAttunementColor === undefined) settings.itemAttunementColor = "";
-    if (settings.itemMagicColor === undefined) settings.itemMagicColor = "";
+    settings = await checkSettingValues(settings);
     await saveSettings();
+  }
+
+  async function checkSettingValues(data) {
+    var games = await StorageHelper.listObjectStores(StorageHelper.dbNames.compendiums);
+
+    if (data.conditionCompendium === undefined || !games.includes(data.conditionCompendium))
+      data.conditionCompendium = "off";
+    if (data.defenses === undefined) data.defenses = true;
+    if (data.spellFilter === undefined) data.spellFilter = true;
+    if (data.spellView === undefined) data.spellView = true;
+    if (data.itemAttunementColor === undefined) data.itemAttunementColor = "";
+    if (data.itemMagicColor === undefined) data.itemMagicColor = "";
+    if (data.traitsView === undefined) data.traitsView = true;
+    if (data.itemView === undefined) data.itemView = true;
+
+    return data;
   }
 
   var CharacterSettings = {

@@ -2,7 +2,11 @@
   "manifest_version": 3,
   "name": "C20",
   "version": "0.0.0.1",
-  "description": "Adds additional UI features to 5e Roll20 games.",
+  "icons": {
+    "48": "library/icons/c20_48.png",
+    "128": "library/icons/c20_128.png"
+  },
+  "description": "Small number of quality of life enhancements for Roll20 5e players.",
   "content_scripts": [
     {
       "matches": ["https://app.roll20.net/editor"],
@@ -25,7 +29,6 @@
         "components/shared/utilities.js",
         "library/external/sortable.js",
         "library/external/idb.js",
-        "library/external/uFuzzy.js",
         "mainApp.js"
       ],
       "css": [

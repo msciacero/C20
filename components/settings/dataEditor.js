@@ -64,7 +64,7 @@ var DataEditor = (function () {
         { text: "Import Data", value: "import" },
         { text: "Export Data", value: "export" },
         {
-          text: "Edit Data",
+          text: "Delete Data",
           value: "delete",
         },
       ],

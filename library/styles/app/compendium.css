@@ -48,6 +48,10 @@
   z-index: 1;
 }
 
+html.dark .c20-compendium-menu {
+  left: 12px;
+}
+
 .c20-compendium-menu select {
   width: 160px;
   cursor: pointer;

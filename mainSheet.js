@@ -27,18 +27,20 @@ async function init5e() {
   if (settings.conditionCompendium !== "off") Conditions.init();
   if (settings.spellFilter) Spells.initFilter();
   if (settings.spellView) Spells.initUi();
-  Traits.init();
+  if (settings.traitView) Traits.init();
   //MiniNotes.init();
   CompendiumImport.init();
-  Inventory.init();
+  if (settings.itemView) Inventory.init();
   Attacks.init();
   levelEvent();
 }
 
+var dnd2014Image = [
+  'url("https://app.roll20.net/images/dndstyling/CharScroll.svg")',
+  'url("https://storage.googleapis.com/char-sheet-app-images-6e101411/D%26D5e/images/darkmode/CharScroll_dm.svg")',
+];
+
 waitForElement(".sheetform").then(() => {
-  if (
-    window.getComputedStyle(document.querySelector(".container.pc .header"))?.backgroundImage ===
-    'url("https://app.roll20.net/images/dndstyling/CharScroll.svg")'
-  )
+  if (dnd2014Image.includes(window.getComputedStyle(document.querySelector(".container.pc .header"))?.backgroundImage))
     init5e();
 });

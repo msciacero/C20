@@ -23,11 +23,9 @@ C20 is a browser extension for Roll20. It adds a number of features that allows 
 ## 3rd Party Libraries
 
 - expr-eval (https://github.com/silentmatt/expr-eval) - Calculate roll20 dice formulas
-- FontAwesome Icons (https://fontawesome.com/) - Filter icon on spell tab
+- FontAwesome Icons (https://fontawesome.com/) - Filter/Shield Icon
 - idb (https://github.com/jakearchibald/idb) - async indexeddb helper
-- Intrinsical's D&D 5e Icon Set by David Kor Kian Wei (https://github.com/intrinsical/tw-dnd/tree/main/icons) - Shield icon for defenses
 - Sortable.js by RubaXa & owenm (https://github.com/SortableJS/Sortable) - Custom journal drag & drop
-- uFuzzy (https://github.com/leeoniya/uFuzzy) - Custom compendium search filter
 
 ## Wish List
 
@@ -35,6 +33,8 @@ C20 is a browser extension for Roll20. It adds a number of features that allows 
 - Mini Notes: rebuild with nested accordion groups (parent/child)
 - Move styles to css
 - Language support
+- App settings: Character Sheet
+- Compendium: Related categories search
 
 ## Known Issues
 

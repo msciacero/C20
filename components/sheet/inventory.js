@@ -209,7 +209,11 @@ var Inventory = (function () {
     },
     updateItemDisplay: updateItemDisplay,
     remove: function remove() {
-      document.removeEventListener("click", createUi);
+      document.querySelector(".page .equipment .complex").removeEventListener("click", createUi);
+      Array.from(document.querySelectorAll(".c20-item-divider")).forEach((x) => x.classList.remove("c20-item-divider"));
+      Array.from(document.querySelectorAll('.equipment .repitem .item input[name="attr_itemproperties"]')).forEach(
+        (x) => x.style.removeProperty("accent-color"),
+      );
     },
   };
   return Inventory;

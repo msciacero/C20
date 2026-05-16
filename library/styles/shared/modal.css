@@ -61,6 +61,37 @@ html.dark .c20-modal-card > div:last-of-type {
   overflow-y: auto;
 }
 
+.c20-modal-full .modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+html.dark .c20-modal-full .modal-content {
+  background-color: #1f1f1f;
+}
+
+.c20-modal-full .close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.c20-modal-full .modal-content .close:hover,
+.c20-modal-full .modal-content .close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+html.dark .c20-modal-full .modal-content .close:hover,
+html.dark .c20-modal-full .modal-content .close:focus {
+  color: white;
+}
+
 #c20-data-modal .btn-danger {
   float: right;
   font-size: 10px;
@@ -73,4 +104,9 @@ html.dark .c20-modal-card > div:last-of-type {
 #c20-data-modal summary:hover,
 #c20-data-modal details > div:hover {
   background-color: #efefef;
+}
+
+html.dark #c20-data-modal summary:hover,
+html.dark #c20-data-modal details > div:hover {
+  background-color: rgb(50, 50, 50);
 }

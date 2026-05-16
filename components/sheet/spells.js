@@ -213,8 +213,8 @@ var Spells = (function () {
 
     // filter button state
     if (Object.keys(defaultFilter).every((key) => defaultFilter[key] === spellData.filter[key]))
-      document.querySelector(".c20-spellFilter .filterBtn").classList.remove("active");
-    else document.querySelector(".c20-spellFilter .filterBtn").classList.add("active");
+      document.querySelector(".c20-spellFilter .filterBtn")?.classList?.remove("active");
+    else document.querySelector(".c20-spellFilter .filterBtn")?.classList?.add("active");
   }
 
   function resetFilter(save) {

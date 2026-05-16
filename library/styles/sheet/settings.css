@@ -66,3 +66,11 @@
 #c20-character-settings button:hover {
   color: #e7339d;
 }
+
+.sheet-darkmode #c20-character-settings button {
+  color: rgb(179, 179, 179);
+}
+
+.sheet-darkmode #c20-character-settings button:hover {
+  color: white;
+}

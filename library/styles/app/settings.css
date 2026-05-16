@@ -22,3 +22,7 @@
   color: #e7339d;
   text-decoration: underline;
 }
+
+html.dark #c20-settings button:hover {
+  color: white;
+}

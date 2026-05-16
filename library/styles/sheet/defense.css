@@ -51,29 +51,33 @@
 .health-defense .c20-health-immunity img {
   filter: brightness(0) saturate(100%) invert(69%) sepia(42%) saturate(5044%) hue-rotate(116deg) brightness(92%)
     contrast(101%);
-  width: 15px;
+  width: 20px;
 }
 
 .health-defense .c20-health-vulnerability img {
   /* filter: brightness(0) saturate(100%) invert(39%) sepia(6%) saturate(5%) hue-rotate(5deg) brightness(94%) contrast(85%); */
   filter: brightness(0) saturate(100%) invert(36%) sepia(97%) saturate(3163%) hue-rotate(335deg) brightness(78%)
     contrast(145%);
-  width: 15px;
+  width: 20px;
 }
 
 .health-defense .row > .c20-imageText {
   position: absolute;
   color: white;
   width: 15px;
-  left: 0px;
+  left: 2px;
   cursor: default;
   text-align: center !important;
   font-size: 10px;
+  font-family: math;
+}
+
+.health-defense .row > .c20-imageText {
+  top: 2px;
 }
 
 .sheet-darkmode .health-defense .row > .c20-imageText {
-  color: black;
-  top: -2px;
+  color: rgb(59, 59, 59);
   font-weight: 700;
 }
 
@@ -90,7 +94,7 @@
 }
 
 .health-defense .options input {
-  width: calc(100% - 28px);
+  width: calc(100% - 32px);
   border: none;
   border-bottom: 1px solid black;
   background: none;

@@ -193,21 +193,15 @@ var Compendium = (function () {
       }
 
       var objNames = await StorageHelper.listIndexKeys(StorageHelper.dbNames.compendiums, settings.game, "names");
-      var uf = new uFuzzy({});
-      var searchResults = uf.search(objNames, event.target.value);
+      var objNames = objNames.filter((x) => x.includes(event.target.value));
 
-      if (!searchResults || searchResults[0]?.length === 0) {
+      if (!objNames || objNames?.length === 0) {
         pageWrapper.replaceChildren(createNoSearchResults());
         return;
       }
 
-      const promises = searchResults[0].map(async (x) => {
-        return await StorageHelper.getItemFromIndex(
-          StorageHelper.dbNames.compendiums,
-          settings.game,
-          "names",
-          objNames[x],
-        );
+      const promises = objNames.map(async (x) => {
+        return await StorageHelper.getItemFromIndex(StorageHelper.dbNames.compendiums, settings.game, "names", x);
       });
 
       const results = await Promise.all(promises);

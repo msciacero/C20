@@ -19,7 +19,7 @@ var CompendiumEditor = (function () {
   // modal UI
   async function createModal() {
     var modal = document.createElement("div");
-    modal.className = `modal`;
+    modal.className = `modal c20-modal-full`;
     modal.id = "c20-editor-modal";
 
     var modalContent = document.createElement("div");
@@ -731,11 +731,9 @@ var CompendiumEditor = (function () {
     if (advContent.classList.contains("hidden")) {
       cpContent.classList.add("hidden");
       advContent.classList.remove("hidden");
-      btn.style.color = "blueviolet";
     } else {
       advContent.classList.add("hidden");
       cpContent.classList.remove("hidden");
-      btn.style.color = "black";
     }
   }
 

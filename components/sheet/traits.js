@@ -55,8 +55,8 @@ var Traits = (function () {
       createUi();
     },
     remove: function remove() {
-      var selector = document.querySelectorAll(".page .traits.c20-v2");
-      selector.querySelector(".c20-desc").remove();
+      var selector = document.querySelector(".page .traits.c20-v2");
+      selector.querySelectorAll(".c20-desc").forEach((x) => x.remove());
       selector.removeEventListener("change", checkForUpdates);
       selector.classList.remove("c20-v2");
       observer.disconnect();

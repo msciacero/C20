@@ -1,55 +1,17 @@
-.modal#c20-editor-modal {
-  padding-top: 100px; /* Location of the box */
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  z-index: 16000;
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-
-.sheet-darkmode .modal-content {
-  background-color: rgb(51, 51, 51);
-}
-
-.modal-content .close {
-  color: #aaaaaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.modal-content .close:hover,
-.modal-content .close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
 #delete-compendium-button {
   font-family: "pictos";
   height: 18px;
   margin-top: 23px;
 }
 
-.progress-container {
+#c20-editor-modal .progress-container {
   position: absolute;
   width: 96%;
   height: 2px; /* Adjust height as needed */
   overflow: hidden; /* Ensures the inner bar stays within the container */
 }
 
-.progress-bar {
+#c20-editor-modal .progress-bar {
   height: 100%;
   background-color: #5591d4; /* Green color, adjust as needed */
   width: 0%; /* Initial width */
@@ -73,4 +35,8 @@
 }
 #compendium-editor fieldset:not(:last-of-type) {
   margin-bottom: 10px;
+}
+
+#c20-editor-modal:has(#c20-compendium-modal-content.hidden) #compendium-editor-advanced {
+  color: blueviolet;
 }
