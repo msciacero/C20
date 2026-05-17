@@ -189,7 +189,7 @@ var Conditions = (function () {
   }
 
   async function updateConditionsList() {
-    settings.compendium = await getConditionCompendium();
+    settings.compendium = CharacterSettings.settings().conditionCompendium;
     if (settings.compendium === "off") return;
 
     var conditions = await loadCompendiumConditions(settings.compendium);
@@ -298,15 +298,6 @@ var Conditions = (function () {
 
   async function loadCompendiumConditions() {
     return await StorageHelper.listItemsByType(StorageHelper.dbNames.compendiums, settings.compendium, "condition");
-  }
-
-  async function getConditionCompendium() {
-    var characterSettings = await StorageHelper.getItem(
-      StorageHelper.dbNames.characters,
-      window.character_id,
-      "settings",
-    );
-    return characterSettings.conditionCompendium;
   }
 
   async function getCompendiumItem(itemKey) {

@@ -1,24 +1,22 @@
 # C20
 
-C20 is a browser extension for Roll20. It adds a number of features that allows you to customize your game and 5e character sheet.
+C20 is a browser extension for Roll20 that adds a number of quality of life improvements to the D&D 5e 2014 character sheet and game.
 
 ## App Features
 
 - Additional journal actions for players (hide, filter, sort, and folder management)
 - Custom Compendium
-  - Ability to create new compendiums for custom content
-  - Drag and drop ability that mimics manually updating character sheet
+  - Ability to add your own custom compendium content
+  - Drag and drop onto character sheet that populates items, spells, and feature/traits.
   - Does not work with Charactermancer
 
-## DnD 2014 Character Sheet Features
+## D&D 5e 2014 Character Sheet Features
 
 - Defense section to track resistance, immunity, and vulnerability.
 - Conditions tracking, similar to exhaustion tracking but broader.
-- Custom spell table layout.
-- Spell list filter.
-- Item editor UI.
-- Inventory tweaks. Can specify different color for magical items and add dividers.
-- Added limited markdown support to Features & Traits (bold, italic, list, tables)
+- Spell table layout and filter
+- Inventory tweaks that allow dividers, different colors for magical items, and advanced item editor
+- Features and Traits has some markdown syntax support (bold, italic, list, tables)
 
 ## 3rd Party Libraries
 
@@ -33,8 +31,8 @@ C20 is a browser extension for Roll20. It adds a number of features that allows 
 - Mini Notes: rebuild with nested accordion groups (parent/child)
 - Move styles to css
 - Language support
-- App settings: Character Sheet
 - Compendium: Related categories search
+- Versatile rolling support, item editor on/off
 
 ## Known Issues
 

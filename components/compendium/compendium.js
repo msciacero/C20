@@ -111,9 +111,22 @@ var Compendium = (function () {
   //Compendium
   async function createCompendium() {
     var compendiumContainer = document.querySelector("#c20-compendium");
-    compendiumContainer.replaceChildren(createCompendiumTitle());
+    compendiumContainer.replaceChildren(createCompendiumEdit());
+    compendiumContainer.appendChild(createCompendiumTitle());
     compendiumContainer.appendChild(createCompendiumSearch());
     compendiumContainer.appendChild(await createCompendiumCategories());
+  }
+
+  function createCompendiumEdit() {
+    // compendium editor
+    var editorBtn = document.createElement("button");
+    editorBtn.textContent = "p";
+    editorBtn.style.fontFamily = "Pictos";
+    editorBtn.style.position = "absolute";
+    editorBtn.style.right = "30px";
+    editorBtn.addEventListener("click", CompendiumEditor.show);
+
+    return editorBtn;
   }
 
   function createCompendiumTitle() {

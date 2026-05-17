@@ -168,9 +168,8 @@ var Inventory = (function () {
     CompendiumImport.updateItem(itemData, itemId);
   }
 
-  async function updateItemDisplay(item) {
-    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
-    updateAccent(item.querySelector('input[name="attr_itemproperties"]'), settings);
+  function updateItemDisplay(item) {
+    updateAccent(item.querySelector('input[name="attr_itemproperties"]'));
     updateDivider(item.querySelector('input[name="attr_itemmodifiers"]'));
   }
 
@@ -179,33 +178,32 @@ var Inventory = (function () {
     else item.closest(".item").classList.remove("c20-item-divider");
   }
 
-  function updateAccent(item, settings) {
+  function updateAccent(item) {
     var equippedElement = item.closest(".item").querySelector(".equipped.main");
-    if (item.value.includes("Magical (Attunement)") && settings.itemAttunementColor) {
-      equippedElement.style.setProperty("accent-color", settings.itemAttunementColor);
-    } else if (item.value.includes("Magical") && settings.itemMagicColor) {
-      equippedElement.style.setProperty("accent-color", settings.itemMagicColor);
+    if (item.value.includes("Magical (Attunement)") && CharacterSettings.settings().itemAttunementColor) {
+      equippedElement.style.setProperty("accent-color", CharacterSettings.settings().itemAttunementColor);
+    } else if (item.value.includes("Magical") && CharacterSettings.settings().itemMagicColor) {
+      equippedElement.style.setProperty("accent-color", CharacterSettings.settings().itemMagicColor);
     } else {
       equippedElement.style.removeProperty("accent-color");
     }
   }
 
-  async function updateAccents() {
+  function updateAccents() {
     var items = Array.from(document.querySelectorAll('.equipment .repitem .item input[name="attr_itemproperties"]'));
-    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
-    items.forEach((item) => updateAccent(item, settings));
+    items.forEach((item) => updateAccent(item));
   }
 
   var Inventory = {
-    init: async function init() {
+    init: function init() {
       document.querySelector(".page .equipment .complex").addEventListener("click", createUi);
-      await updateAccents();
+      updateAccents();
       Array.from(document.querySelectorAll('.equipment .repitem .item input[name="attr_itemmodifiers"]'))
         .filter((item) => item.value.includes("Item Type: Divider"))
         .forEach((item) => updateDivider(item));
     },
-    updateUi: async function updateUi() {
-      await updateAccents();
+    updateUi: function updateUi() {
+      updateAccents();
     },
     updateItemDisplay: updateItemDisplay,
     remove: function remove() {

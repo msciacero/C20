@@ -1,7 +1,6 @@
 function levelEvent() {
   var observer = new MutationObserver(async (mutationsList, _) => {
-    var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
-    if (settings.spellView) {
+    if (CharacterSettings.settings.spellView) {
       document.querySelectorAll(".spell-container .repcontainer .spell").forEach((s) => Spells.updateSpellRow(s));
     }
   });
@@ -21,16 +20,14 @@ async function init5e() {
   await StorageHelper.initCharacter();
   await CharacterSettings.init();
 
-  var settings = await StorageHelper.getItem(StorageHelper.dbNames.characters, window.character_id, "settings");
-
-  if (settings.defenses) Defenses.init();
-  if (settings.conditionCompendium !== "off") Conditions.init();
-  if (settings.spellFilter) Spells.initFilter();
-  if (settings.spellView) Spells.initUi();
-  if (settings.traitView) Traits.init();
+  if (CharacterSettings.settings().defenses) Defenses.init();
+  if (CharacterSettings.settings().conditionCompendium !== "off") Conditions.init();
+  if (CharacterSettings.settings().spellFilter) Spells.initFilter();
+  if (CharacterSettings.settings().spellView) Spells.initUi();
+  if (CharacterSettings.settings().traitsView) Traits.init();
   //MiniNotes.init();
   CompendiumImport.init();
-  if (settings.itemView) Inventory.init();
+  if (CharacterSettings.settings().itemView) Inventory.init();
   Attacks.init();
   levelEvent();
 }

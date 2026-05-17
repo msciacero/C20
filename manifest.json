@@ -3,6 +3,7 @@
   "name": "C20",
   "version": "0.0.0.1",
   "icons": {
+    "16": "library/icons/c20_16.png",
     "48": "library/icons/c20_48.png",
     "128": "library/icons/c20_128.png"
   },

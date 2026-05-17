@@ -148,7 +148,7 @@ var CharacterSettings = (function () {
   async function itemAttunementColorEvent(event) {
     settings.itemAttunementColor = event.target.value;
     await saveSettings();
-    await Inventory.updateUi();
+    Inventory.updateUi();
   }
 
   async function itemMagicColorEvent(event) {
@@ -186,11 +186,11 @@ var CharacterSettings = (function () {
     }
 
     if (settings.itemAttunementColor !== df.itemAttunementColor) {
-      await Inventory.updateUi();
+      Inventory.updateUi();
     }
 
     if (settings.itemMagicColor !== df.itemMagicColor) {
-      await Inventory.updateUi();
+      Inventory.updateUi();
     }
 
     if (settings.traitsView !== df.traitsView) {
@@ -282,6 +282,9 @@ var CharacterSettings = (function () {
     init: async function init() {
       await loadSettings();
       await createUi();
+    },
+    settings: function getSettings() {
+      return settings;
     },
   };
   return CharacterSettings;
