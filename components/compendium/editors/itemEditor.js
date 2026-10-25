@@ -1001,9 +1001,9 @@ function constructItemAbilityData(formData) {
   const cleanData = { ...formData };
 
   // 1. Reconstruct Safe Abilities Map Arrays
-  const rawAbilities = formData["abilities.ability[]"];
-  const rawAbilitiesType = formData["abilities.type[]"];
-  const rawAbilitiesValue = formData["abilities.value[]"];
+  const rawAbilities = formData["abilities.ability"];
+  const rawAbilitiesType = formData["abilities.type"];
+  const rawAbilitiesValue = formData["abilities.value"];
 
   if (rawAbilities) {
     // Force inputs into standardized list forms even if single elements are submitted
@@ -1018,14 +1018,14 @@ function constructItemAbilityData(formData) {
     }));
 
     // Discard flat array artifacts cleanly out of the final save payload structure
-    delete cleanData["abilities.ability[]"];
-    delete cleanData["abilities.type[]"];
-    delete cleanData["abilities.value[]"];
+    delete cleanData["abilities.ability"];
+    delete cleanData["abilities.type"];
+    delete cleanData["abilities.value"];
   }
 
   // 2. Reconstruct Safe Skills Map Arrays
-  const rawSkills = formData["skills.ability[]"];
-  const rawSkillsValue = formData["skills.value[]"];
+  const rawSkills = formData["skills.ability"];
+  const rawSkillsValue = formData["skills.value"];
 
   if (rawSkills) {
     const listSkills = Array.isArray(rawSkills) ? rawSkills : [rawSkills];
@@ -1036,13 +1036,13 @@ function constructItemAbilityData(formData) {
       value: listVals[index] || "0",
     }));
 
-    delete cleanData["skills.ability[]"];
-    delete cleanData["skills.value[]"];
+    delete cleanData["skills.ability"];
+    delete cleanData["skills.value"];
   }
 
   // 3. Reconstruct Safe Saving Throws Map Arrays
-  const rawSaves = formData["saves.ability[]"];
-  const rawSavesValue = formData["saves.value[]"];
+  const rawSaves = formData["saves.ability"];
+  const rawSavesValue = formData["saves.value"];
 
   if (rawSaves) {
     const listSaves = Array.isArray(rawSaves) ? rawSaves : [rawSaves];
@@ -1053,8 +1053,8 @@ function constructItemAbilityData(formData) {
       value: listVals[index] || "0",
     }));
 
-    delete cleanData["saves.ability[]"];
-    delete cleanData["saves.value[]"];
+    delete cleanData["saves.ability"];
+    delete cleanData["saves.value"];
   }
 
   return cleanData;

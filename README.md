@@ -174,7 +174,9 @@ Only enabled for players because GMs already get most of these features.
 
 ## Wish List
 
-- Compendium: Species, Monsters, Features, Groupings (Type/Name|GroupName), category search filter
+- Rework compendium
+  - Conditions, Items, Features/Traits, Spells
+  - Parent groups (Background, Classes, Subclasses)
 - Move styles to css
 - Language support
 - Compendium: Related categories search
