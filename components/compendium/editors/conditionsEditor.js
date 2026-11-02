@@ -29,7 +29,7 @@ function createConditionsEditor(data) {
   if (typeof createTextArray === "function") {
     const fallbackShortValues = Array.isArray(data.short) ? data.short : [data.short].filter(Boolean);
     editor.appendChild(
-      createTextArray({ name: "short", title: "Short Description", values: fallbackShortValues, required: false }),
+      createTextArray({ name: "short[]", title: "Short Description", values: fallbackShortValues, required: false }),
     );
   }
 
